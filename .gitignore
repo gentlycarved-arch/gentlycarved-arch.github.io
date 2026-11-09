@@ -1,0 +1,11 @@
+# Only the files the homepage loads are published.
+*
+!.gitignore
+!.nojekyll
+!CNAME
+!index.html
+!media/
+media/*
+!media/gc-signature.jpg
+!media/me-metal.png
+!media/share.png
