@@ -32,6 +32,9 @@
 
   .sheet { width: min(96vw, 1700px); margin: 0 auto; }
 
+  .old-site { position: absolute; top: 20px; right: 24px; z-index: 3; text-decoration: underline; text-underline-offset: 2px; }
+  .old-site:hover { color: #888; }
+
   /* Everything but the logo steps back while you hover the logo. */
   .info { transition: opacity .45s ease; }
   body.on-logo:not(.panel-open) .info { opacity: .18; }
@@ -85,11 +88,14 @@
 
   @media (max-width: 760px) {
     body { font-size: 15px; }
+    .old-site { top: 14px; right: 16px; }
     #logo { width: 124%; }
   }
 </style>
 </head>
 <body>
+<a class="old-site" href="https://tahreem.cv">old website</a>
+
 <main class="sheet">
   <div class="info top">
     <p class="desc">daydreamer &amp; designer</p>
