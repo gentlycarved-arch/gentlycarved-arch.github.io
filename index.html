@@ -30,9 +30,18 @@
     animation: fade 1.8s ease-out both;
     cursor: default;
   }
-  .photo img {
-    position: absolute; inset: 0; width: 100%; height: 100%;
-    user-select: none; -webkit-user-drag: none;
+  /* The photo is drawn as a background, not an <img>, so there is no image to "Save as". */
+  .photo .layer {
+    position: absolute; inset: 0;
+    background: center / 100% 100% no-repeat;
+  }
+  .photo .bw    { background-image: url("media/me-grain.png"); }
+  .photo .color { background-image: url("media/me-grain-color.png"); }
+  /* No long-press save sheet, no selecting, no dragging. */
+  .photo, .photo .layer, #logo {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none; user-select: none;
+    -webkit-user-drag: none;
   }
   .photo .color { opacity: 0; transition: opacity .7s ease; }
   .photo:hover .color, .photo.on .color { opacity: 1; }
@@ -53,11 +62,15 @@
 </head>
 <body>
   <div class="photo">
-    <img src="media/me-grain.png" width="1300" height="1300" alt="">
-    <img class="color" src="media/me-grain-color.png" width="1300" height="1300" alt="">
+    <div class="layer bw" role="img" aria-label="A photo of me as a child at the computer"></div>
+    <div class="layer color"></div>
   </div>
   <canvas id="logo" role="img" aria-label="gentlycarved"></canvas>
 <script>
+// No right-click menu or dragging anywhere on the page, so the photo can't be saved from it.
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('dragstart', e => e.preventDefault());
+
 // Phones have no hover: a tap on the photo switches the colour on and off.
 document.querySelector('.photo').addEventListener('pointerup', e => {
   if (e.pointerType !== 'mouse') e.currentTarget.classList.toggle('on');
