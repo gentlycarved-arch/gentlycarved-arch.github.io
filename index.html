@@ -19,14 +19,15 @@
 <style>
   html, body { margin: 0; height: 100%; background: #fff; }
   body { overflow: hidden; }
-  :root { --sq: min(78vh, 78vw); }   /* the photo's square, a little smaller than the screen */
+  :root { --sq: min(72vh, 72vw); }   /* the photo's square, a little smaller than the screen */
 
   /* A photo of me in a square, broken into a fine random grain that fades out to white.
      Hovering it (or tapping, on a phone) brings the colour back in the same grain. */
   .photo {
     position: fixed; left: 50%; top: 50%;
-    width: var(--sq); height: var(--sq);
-    transform: translate(-50%, -50%);
+    /* the image is wider than the photo itself: the grain scatters out past its edges */
+    width: calc(var(--sq) * 2340 / 1300); height: calc(var(--sq) * 2340 / 1300);
+    transform: translate(-50%, calc(-50% - 4vh));
     animation: fade 1.8s ease-out both;
     cursor: default;
   }
@@ -51,8 +52,8 @@
      Multiply lets the grain read through the dark logo. */
   #logo {
     position: fixed; left: 50%; top: 50%;
-    width: min(calc(var(--sq) * 1.78), 112vw); height: auto;
-    transform: translate(-50%, -50%);
+    width: min(calc(var(--sq) * 1.93), 112vw); height: auto;
+    transform: translate(-50%, calc(-50% - 4vh));
     mix-blend-mode: multiply;
     pointer-events: none;
   }
