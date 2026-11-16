@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Work · Tahreem Rehman</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="../media/me-metal.png">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #fff; color: #111; }
+  body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px; line-height: 1.35; letter-spacing: -0.005em;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Password screen */
+  .gate {
+    position: fixed; inset: 0;
+    display: grid; place-items: center;
+    background: #fff;
+  }
+  .gate form { display: grid; gap: 10px; justify-items: center; }
+  .gate label { font-size: 14px; color: #111; }
+  .gate input {
+    font: inherit; font-size: 15px; text-align: center;
+    width: 220px; padding: 6px 0;
+    border: 0; border-bottom: 1px solid #111; border-radius: 0;
+    background: transparent; color: #111; outline: none;
+  }
+  .gate input::placeholder { color: #aaa; }
+  .gate .no { color: #888; min-height: 1.35em; }
+  .gate.shake form { animation: shake .35s; }
+  @keyframes shake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+
+  /* The grid: three columns of work, each with its caption underneath */
+  main { padding: 28px 28px 80px; }
+  /* Masonry: three columns, each piece goes into whichever column is shortest. */
+  .grid { display: flex; gap: 28px; align-items: flex-start; }
+  .col { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 48px; }
+  figure { margin: 0; }
+  .grid img, .grid video { display: block; width: 100%; height: auto; background: #f4f4f4; }
+  .grid img { cursor: zoom-in; }
+  figcaption { margin-top: 10px; max-width: 34em; color: #111; }
+
+  /* Full view of an image */
+  .full {
+    position: fixed; inset: 0; z-index: 5; background: rgba(255,255,255,.97);
+    display: none; place-items: center; padding: 28px; cursor: zoom-out;
+  }
+  .full.open { display: grid; }
+  .full img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+  @media (max-width: 900px) { .grid { gap: 18px; } .col { gap: 36px; } main { padding: 18px 16px 60px; } }
+</style>
+</head>
+<body>
+<div class="gate" id="gate">
+  <form id="form" autocomplete="off">
+    <label for="pw">password</label>
+    <input id="pw" type="password" autofocus>
+    <div class="no" id="no" aria-live="polite"></div>
+  </form>
+</div>
+
+<main hidden id="work">
+  <div class="grid" id="grid"></div>
+</main>
+
+<div class="full" id="full"><img alt=""></div>
+
+<script>
+// Not real security: the files themselves are public on GitHub. This only keeps the page out of casual view.
+const PASSWORD = 'affogato';
+const ITEMS = [{"src": "../media/viaduct-you-are-what-you-practice.png", "kind": "image", "caption": "Book design for Sherry’s introduction in the playbill for The Viaduct, a Toronto lecture series.", "w": 825, "h": 1275}, {"src": "../media/gc-soap.jpg", "kind": "image", "caption": "concept for gentlycarved studio + logo design", "w": 1935, "h": 1440}, {"src": "../media/film-5.png", "kind": "image", "caption": "shot on 35mm film by me", "w": 3130, "h": 2075}, {"src": "../media/gc-tshirt.jpg", "kind": "image", "caption": "concept t-shirt for are.na, my fave place on the internet.", "w": 2048, "h": 1372}, {"src": "../media/film-3.png", "kind": "image", "caption": "shot on 35mm film by me", "w": 3130, "h": 2075}, {"src": "../media/iris-gallery.jpg", "kind": "image", "caption": "Gallery design for Iris, a tool for exploring and generating colour palettes.", "w": 2522, "h": 1391}, {"src": "../media/film-7.png", "kind": "image", "caption": "shot on 35mm film by me", "w": 3130, "h": 2075}, {"src": "../media/geo-ai.png", "kind": "image", "caption": "Early prototype used to explore the overall layout, information hierarchy, and core-logging workflow of CoreTable Lite, helping validate how users would navigate the interface, view core data, and record geological observations.", "w": 1455, "h": 1080}, {"src": "../media/gc-signature.jpg", "kind": "image", "caption": "logo + type experiment for gentlycarved", "w": 1786, "h": 724}, {"src": "../media/photo-9064.jpg", "kind": "image", "caption": "shot on 35mm film by me", "w": 994, "h": 659}, {"src": "../media/geo-future-of-mining-tools.mp4", "kind": "video", "caption": "", "w": 2298, "h": 1248, "poster": "../media/posters/geo-future-of-mining-tools.jpg"}, {"src": "../media/iris-wheel.jpg", "kind": "image", "caption": "screenshot from my color palette tool - Iris", "w": 1871, "h": 1388}, {"src": "../media/film-8.png", "kind": "image", "caption": "shot on 35mm film by me", "w": 3130, "h": 2075}, {"src": "../media/iris-montage.gif", "kind": "image", "caption": "Examples of Iris, a colour palette exploration tool, showing how users can create, refine, and apply colour palettes across different visual and creative projects.", "w": 1802, "h": 1634}, {"src": "../media/geo-trailer.png", "kind": "image", "caption": "sticker design of GeologicAI trailer/core scanner", "w": 933, "h": 419}, {"src": "../media/film-1.png", "kind": "image", "caption": "shot on 35mm film by me", "w": 3130, "h": 2075}, {"src": "../media/viaduct-canvas.jpg", "kind": "image", "caption": "screenshot of a random Figma file", "w": 1125, "h": 1019}, {"src": "../media/film-2.png", "kind": "image", "caption": "shot on 35mm film by me", "w": 3130, "h": 2075}, {"src": "../media/viaduct-final-posters.gif", "kind": "image", "caption": "poster design for the Viaduct Season 4, a lecture series by The Toronto Society", "w": 1080, "h": 1080}, {"src": "../media/site-severance-2.mp4", "kind": "video", "caption": "", "w": 1280, "h": 720, "poster": "../media/posters/site-severance-2.jpg"}, {"src": "../media/photo-9066.jpg", "kind": "image", "caption": "shot on 35mm film by me", "w": 994, "h": 659}, {"src": "../media/film-6.png", "kind": "image", "caption": "shot on 35mm film by me", "w": 3130, "h": 2075}, {"src": "../media/site-landing.png", "kind": "image", "caption": "landing page for my website", "w": 2048, "h": 1297}, {"src": "../media/photo-desk.jpg", "kind": "image", "caption": "my desk", "w": 1440, "h": 1080}, {"src": "../media/photo-9065.jpg", "kind": "image", "caption": "shot on 35mm film by me", "w": 994, "h": 659}, {"src": "../media/viaduct-burgis-map.png", "kind": "image", "caption": "book design + diagram design for Luke Burgis's lecture on the \"The Three City Problem\"", "w": 919, "h": 1275}, {"src": "../media/geo-coretable.png", "kind": "image", "caption": "Designing the export workflow for logging data, allowing geologists to select the information they need and export it in a format that can be used for analysis and downstream geological workflows.", "w": 1706, "h": 932}, {"src": "../media/photo-9062.jpg", "kind": "image", "caption": "shot on 35mm film by me", "w": 994, "h": 659}, {"src": "../media/geo-description.png", "kind": "image", "caption": "Users can log geological information on the Striplog by dragging rectangles over specific depth intervals and applying attributes such as lithology, grain size, colour, alteration, mineralization, structures, and other core observations to each interval.", "w": 1301, "h": 994}, {"src": "../media/geo-core-imagery.mp4", "kind": "video", "caption": "", "w": 3024, "h": 466, "poster": "../media/posters/geo-core-imagery.jpg"}, {"src": "../media/viaduct-burgis-poster.png", "kind": "image", "caption": "Luke Burgis intro design in playbill.", "w": 825, "h": 1275}, {"src": "../media/photo-9067.jpg", "kind": "image", "caption": "shot on 35mm film by me", "w": 994, "h": 659}, {"src": "../media/geo-mineralogy-selection.mp4", "kind": "video", "caption": "", "w": 1732, "h": 706, "poster": "../media/posters/geo-mineralogy-selection.jpg"}, {"src": "../media/viaduct-crossword-season-4.png", "kind": "image", "caption": "Crossword design iteration for the Viaduct Season 4. a lecture series by The Toronto Society.", "w": 1007, "h": 1410}, {"src": "../media/iris-recording.mp4", "kind": "video", "caption": "", "w": 1732, "h": 1620, "poster": "../media/posters/iris-recording.jpg"}, {"src": "../media/single-covers.png", "kind": "image", "caption": "Cover art creative direction + design for Sam Austins", "w": 1072, "h": 1102}, {"src": "../media/film-4.png", "kind": "image", "caption": "shot on 35mm film by me", "w": 3130, "h": 2075}, {"src": "../media/gc-wax-seal.jpg", "kind": "image", "caption": "gentlycarved studio concept done in photoshop + logo design", "w": 968, "h": 968}, {"src": "../media/kelly-spectrum-reference.jpeg", "kind": "image", "caption": "Kelly Ellsworth — the inspiration behind this negative-space hover interaction.", "w": 960, "h": 959}, {"src": "../media/negative-space-button.mp4", "kind": "video", "caption": "a negative-space hover interaction, inspired by the Kelly Ellsworth painting shown alongside it.", "w": 1280, "h": 720, "poster": "../media/posters/negative-space-button.jpg"}, {"src": "../media/site-severance-1.mp4", "kind": "video", "caption": "", "w": 1280, "h": 720, "poster": "../media/posters/site-severance-1.jpg"}, {"src": "../media/native-montage.gif", "kind": "image", "caption": "website design + identity for Native - native.works", "w": 1920, "h": 1080}, {"src": "../media/viaduct-crossword-engraved.png", "kind": "image", "caption": "", "w": 1833, "h": 2163}, {"src": "../media/viaduct-intention-playbill.png", "kind": "image", "caption": "", "w": 1114, "h": 1411}, {"src": "../media/viaduct-intention-print.jpg", "kind": "image", "caption": "", "w": 964, "h": 1205}, {"src": "../media/iris-icon.png", "kind": "image", "caption": "", "w": 1254, "h": 1254}, {"src": "../media/native-header.jpg", "kind": "image", "caption": "", "w": 2522, "h": 592}, {"src": "../media/kelly-negative-space.mp4", "kind": "video", "caption": "", "w": 1920, "h": 1080, "poster": "../media/posters/kelly-negative-space.jpg"}, {"src": "../media/kelly-side-by-side.mp4", "kind": "video", "caption": "", "w": 1920, "h": 800, "poster": "../media/posters/kelly-side-by-side.jpg"}, {"src": "../media/negative-space-button-square.mp4", "kind": "video", "caption": "", "w": 1080, "h": 1080, "poster": "../media/posters/negative-space-button-square.jpg"}, {"src": "../media/learn-more.jpg", "kind": "image", "caption": "", "w": 1549, "h": 580}, {"src": "../media/site-cv-ads.mp4", "kind": "video", "caption": "", "w": 1920, "h": 1200, "poster": "../media/posters/site-cv-ads.jpg"}, {"src": "../media/site-icon.png", "kind": "image", "caption": "", "w": 554, "h": 553}, {"src": "../media/site-scdp-popup.mp4", "kind": "video", "caption": "", "w": 1920, "h": 1080, "poster": "../media/posters/site-scdp-popup.jpg"}, {"src": "../media/site-sterling-cooper-popup.mp4", "kind": "video", "caption": "", "w": 1920, "h": 1080, "poster": "../media/posters/site-sterling-cooper-popup.jpg"}, {"src": "../media/confessions-free-space.png", "kind": "image", "caption": "", "w": 2400, "h": 1350}, {"src": "../media/confessions-hiring-form.png", "kind": "image", "caption": "", "w": 1276, "h": 1430}, {"src": "../media/confessions-opening.png", "kind": "image", "caption": "", "w": 2400, "h": 1350}, {"src": "../media/photo-espresso.jpg", "kind": "image", "caption": "", "w": 1440, "h": 1080}, {"src": "../media/me-computer.jpg", "kind": "image", "caption": "", "w": 2000, "h": 1300}, {"src": "../media/me-metal.png", "kind": "image", "caption": "", "w": 348, "h": 348}, {"src": "../media/me-metallic.png", "kind": "image", "caption": "", "w": 348, "h": 348}];
+
+const gate = document.getElementById('gate');
+const work = document.getElementById('work');
+const grid = document.getElementById('grid');
+const full = document.getElementById('full');
+
+function figureFor(it) {
+  const fig = document.createElement('figure');
+  let el;
+  if (it.kind === 'video') {
+    el = document.createElement('video');
+    Object.assign(el, { muted: true, loop: true, playsInline: true, preload: 'none', poster: it.poster });
+    el.src = it.src;
+    el.setAttribute('aria-label', it.caption || 'video');
+  } else {
+    el = document.createElement('img');
+    el.loading = 'lazy'; el.decoding = 'async';
+    el.src = it.src; el.alt = it.caption || '';
+    el.addEventListener('click', () => {
+      full.querySelector('img').src = it.src;
+      full.classList.add('open');
+    });
+  }
+  el.width = it.w; el.height = it.h;           // reserves the right space before it loads
+  fig.appendChild(el);
+  if (it.caption) {
+    const cap = document.createElement('figcaption');
+    cap.textContent = it.caption;
+    fig.appendChild(cap);
+  }
+  return fig;
+}
+
+const figures = new Map();
+const io = new IntersectionObserver(entries => {
+  for (const e of entries) e.isIntersecting ? e.target.play().catch(() => {}) : e.target.pause();
+}, { rootMargin: '200px' });
+
+let laidOut = 0;
+function layout() {
+  const n = innerWidth > 900 ? 3 : innerWidth > 560 ? 2 : 1;
+  if (n === laidOut) return;
+  laidOut = n;
+  grid.replaceChildren();
+  const cols = Array.from({ length: n }, () => { const c = document.createElement('div'); c.className = 'col'; grid.appendChild(c); return c; });
+  const heights = new Array(n).fill(0);
+  for (const it of ITEMS) {
+    // In order, each piece drops into the shortest column (height measured as a share of column width).
+    const i = heights.indexOf(Math.min(...heights));
+    if (!figures.has(it)) figures.set(it, figureFor(it));
+    cols[i].appendChild(figures.get(it));
+    heights[i] += it.h / it.w + (it.caption ? 0.12 + it.caption.length / 900 : 0) + 0.1;
+  }
+}
+
+function show() {
+  gate.remove();
+  work.hidden = false;
+  // Build the grid only after unlocking, so nothing loads before the password.
+  layout();
+  grid.querySelectorAll('video').forEach(v => io.observe(v));
+  addEventListener('resize', layout);
+}
+
+let ok = false;
+try { ok = sessionStorage.getItem('work') === '1'; } catch (e) {}
+if (ok) show();
+
+document.getElementById('form')?.addEventListener('submit', e => {
+  e.preventDefault();
+  const pw = document.getElementById('pw');
+  if (pw.value.trim().toLowerCase() === PASSWORD) {
+    try { sessionStorage.setItem('work', '1'); } catch (e) {}
+    show();
+  } else {
+    document.getElementById('no').textContent = 'not quite';
+    gate.classList.remove('shake'); void gate.offsetWidth; gate.classList.add('shake');
+    pw.value = '';
+  }
+});
+
+full.addEventListener('click', () => full.classList.remove('open'));
+addEventListener('keydown', e => { if (e.key === 'Escape') full.classList.remove('open'); });
+</script>
+</body>
+</html>
