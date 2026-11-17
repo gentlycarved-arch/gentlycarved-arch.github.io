@@ -69,7 +69,7 @@
     background: #111; color: #fff; padding: 0;
     transition: background .25s;
   }
-  .iris button.pupil:hover { background: #ff2d95; text-decoration-color: transparent; }
+  .iris button.pupil:hover { background: #555; text-decoration-color: transparent; }
   .iris button.pupil[aria-pressed="true"] { text-decoration-color: transparent; }
   /* Closed: the eye shrinks away towards the dot at the top. */
   .iris.closed { opacity: 0; visibility: hidden; pointer-events: none;
@@ -78,7 +78,7 @@
   .iris svg { transition: opacity .35s ease .15s; }
   .iris.closed svg { opacity: 0; transition: opacity .2s ease; }
 
-  /* The dot the nav becomes. Hovering it turns it hot pink and brings back
+  /* The dot the nav becomes. Hovering it lightens it and brings back
      a ring of small dots in the iris's shape. */
   .dot {
     position: fixed; z-index: 3; left: 50%; top: 50%; transform: translate(-50%, -50%);
@@ -96,11 +96,11 @@
   }
   .dot i {
     position: absolute; left: 50%; top: 50%; width: var(--s, 3px); height: var(--s, 3px); margin: calc(var(--s, 3px) / -2) 0 0 calc(var(--s, 3px) / -2);
-    border-radius: 50%; background: #ff2d95; opacity: 0;
+    border-radius: 50%; background: radial-gradient(circle at 35% 30%, #9a9aa2, #3a3a40 45%, #111); opacity: 0;
     transform: rotate(var(--a)) translateY(0);
     transition: opacity .2s ease, transform .3s ease;
   }
-  .dot:hover::before, .dot:focus-visible::before { background: radial-gradient(circle at 35% 30%, #ffb3d6, #ff2d95 50%, #d1146f); }
+  .dot:hover::before, .dot:focus-visible::before { background: radial-gradient(circle at 35% 30%, #c9c9d0, #6e6e78 50%, #3a3a40); }
   .dot:hover i, .dot:focus-visible i { opacity: 1; transform: rotate(var(--a)) translateY(-17px); }
   .dot:focus-visible { outline: none; }
   /* The gentlycarved signature, top middle, on the page and over the open iris. */
@@ -109,7 +109,7 @@
   .logo[hidden] { display: none; }
   main { padding-top: 110px !important; }
 
-  /* The drawn eye: a soft pink disc with faint graduations at its edge, hairlines from a small
+  /* The drawn eye: a glass disc with dots at its edge, hairlines from a small
      hub out to the rim, and the words sitting in the open. The hub is the pupil: "all". */
   .iris.drawn .ring { border: 0; border-radius: 50%; --d: min(400px, 84vw); }
   /* Frosted glass: the disc blurs the work behind it, with a bright rim and a soft shadow. */
@@ -128,22 +128,22 @@
     background: radial-gradient(circle at var(--lx, 35%) var(--ly, 25%), rgba(255,255,255,.75), rgba(255,255,255,0) 42%);
     mix-blend-mode: soft-light; opacity: .9; transition: opacity .3s;
   }
-  .iris.drawn .pupil:hover .hub, .iris.drawn .pupil:focus-visible .hub { fill: url(#hubPink); stroke: rgba(255,255,255,.95); }
+  .iris.drawn .pupil:hover .hub, .iris.drawn .pupil:focus-visible .hub { fill: url(#hubDark); stroke: rgba(255,255,255,.95); }
   .iris.drawn .pupil:hover .word { fill: #fff; }
   .iris.drawn svg { display: block; width: 100%; height: 100%; overflow: visible; color: #111; }
   .iris.drawn [data-tab] { cursor: pointer; outline: none; }
   .iris.drawn text { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; fill: #6b6b6b; transition: fill .2s; }
   /* Every word sits on the outer edge, upright, in a script hand. */
   .iris.drawn .word, .iris.drawn .mword { font-family: "Pinyon Script", "Snell Roundhand", cursive; }
-  .iris.drawn .word { font-size: 25px; fill: #444; }
+  .iris.drawn .word { font-size: 25px; fill: #6b6b6b; }
   .iris.drawn .pupil .word { font-size: 19px; }
   .iris.drawn .count { font-size: 9px; fill: #9a8582; }
   .iris.drawn .area { fill: transparent; transition: fill .3s; }
   .iris.drawn [data-tab]:hover .area, .iris.drawn [data-tab]:focus-visible .area { fill: rgba(255,255,255,.5); }
   .iris.drawn [data-tab]:hover .word, .iris.drawn [data-tab]:focus-visible .word,
-  .iris.drawn [data-tab][aria-pressed="true"] .word { fill: #ff2d95; }
+  .iris.drawn [data-tab][aria-pressed="true"] .word { fill: #111; }
   .iris.drawn .hub { fill: url(#hubGlass); stroke: rgba(255,255,255,.95); stroke-width: 1; transition: fill .2s, stroke .2s; }
-  .iris.drawn .pupil:hover .hub, .iris.drawn .pupil:focus-visible .hub { stroke: #ff2d95; }
+
   /* Where two kinds meet: dashed lines with a small word on them, over the quarters. */
   .iris.drawn .meet { opacity: 0; transition: opacity .35s ease .15s; }
   .iris.drawn.meeting .meet, .iris.drawn svg:has(.pupil:hover) .meet, .iris.drawn .meet:hover { opacity: 1; transition-delay: 0s; }
@@ -153,14 +153,14 @@
   .iris.drawn .meet [data-tab]:hover .mword, .iris.drawn [data-tab]:hover > .word { fill: #111; }
   .iris.drawn [data-tab].lit .area, .iris.drawn [data-tab].kept .area { fill: rgba(70,72,82,.12); }
   .iris.drawn [data-tab].kept > .word { fill: #111; }
-  /* Where you are: its quarter is tinted and its word is pink; with everything showing, the middle is. */
+  /* Where you are: its quarter is tinted and its word goes dark; with everything showing, the middle is. */
   /* Where you are: a darker, smoky glass segment with a white word. */
   .iris.drawn [data-tab][aria-pressed="true"] .area { fill: rgba(70,72,82,.30); }
-  .iris.drawn .meet [data-tab][aria-pressed="true"] .mword, .iris.drawn [data-tab][aria-pressed="true"] > .word { fill: #fff; }
+
   .iris.drawn .hub { filter: drop-shadow(0 2px 4px rgba(0,0,0,.14)); }
   .iris.drawn .pupil[aria-pressed="true"] .hub { fill: url(#hubDark); stroke: rgba(255,255,255,.7); }
   .iris.drawn .pupil[aria-pressed="true"] .word { fill: #fff; }
-  .iris.drawn [data-tab].lit .word { fill: #ff2d95; }
+  .iris.drawn [data-tab].lit .word { fill: #111; }
   .iris.drawn .ring { position: relative; }
   .iris.drawn .why {
     position: absolute; left: 50%; top: calc(100% + 22px); transform: translateX(-50%);
@@ -171,8 +171,8 @@
   /* The hairlines open up around the meeting words only while those words are showing. */
   .iris.drawn.meeting .hairline, .iris.drawn svg:has(.pupil:hover) .hairline, .iris.drawn svg:has(.meet:hover) .hairline { mask: url(#gaps); }
   .iris.drawn .meet [data-tab]:hover .mword, .iris.drawn .meet [data-tab]:focus-visible .mword,
-  .iris.drawn .meet [data-tab][aria-pressed="true"] .mword { fill: #ff2d95; }
-  .iris.drawn .meet [data-tab]:hover .dash, .iris.drawn .meet [data-tab][aria-pressed="true"] .dash { stroke: #ff2d95; stroke-opacity: 1; }
+  .iris.drawn .meet [data-tab][aria-pressed="true"] .mword { fill: #111; }
+  .iris.drawn .meet [data-tab]:hover .dash, .iris.drawn .meet [data-tab][aria-pressed="true"] .dash { stroke: #111; stroke-opacity: 1; }
   @media (prefers-reduced-motion: reduce) { .iris, .iris .ring, .dot, .dot i { transition: none; } }
 
   /* The grid, after union.design: each project is a block of rows, tight to the edges
@@ -197,7 +197,7 @@
   .others .tile + .name { margin-top: 6px; }
   .other { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
   .other a.name { color: #111; text-decoration: none; }
-  .other a.name:hover { color: #ff2d95; }
+  .other a.name:hover { color: #737373; }
 
   /* Which project you're looking at, top left, changing as you scroll. */
   .now {
@@ -430,7 +430,6 @@ function drawIris() {
   let m = `<defs>
     <radialGradient id="bead" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#9a9aa2"/><stop offset=".45" stop-color="#3a3a40"/><stop offset="1" stop-color="#111"/></radialGradient>
     <radialGradient id="hubGlass" cx="40%" cy="30%" r="80%"><stop offset="0" stop-color="#fff"/><stop offset=".6" stop-color="#f1f1f4"/><stop offset="1" stop-color="#dcdce2"/></radialGradient>
-    <radialGradient id="hubPink" cx="40%" cy="30%" r="80%"><stop offset="0" stop-color="#ffc2de"/><stop offset=".55" stop-color="#ff5aa8"/><stop offset="1" stop-color="#d1146f"/></radialGradient>
     <radialGradient id="hubDark" cx="40%" cy="30%" r="80%"><stop offset="0" stop-color="#9c9ca6"/><stop offset=".6" stop-color="#6e6e78"/><stop offset="1" stop-color="#55555e"/></radialGradient>
   </defs>`;
   // A word just outside the rim at an angle, upright, anchored away from the circle.
