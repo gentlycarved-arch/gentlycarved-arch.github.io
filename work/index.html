@@ -91,6 +91,19 @@
     -webkit-touch-callout: none;
   }
   .me:hover { filter: grayscale(0); }
+
+  /* Nav, tidied: one marker for where you are (a black pill), even spacing, even padding. */
+  header { gap: 16px; }
+  nav { gap: 2px; padding: 5px; }
+  nav button {
+    font-size: 14px; line-height: 20px; padding: 5px 12px 4px; border-radius: 999px; gap: 0;
+    transition: background-color .2s, color .2s;
+  }
+  nav button::before { display: none; }
+  nav button:hover { background: rgba(0,0,0,.06); }
+  nav button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+  nav button.between[aria-pressed="true"] { color: var(--bg); }
+  nav .gap { width: 1px; height: 16px; margin: 0 6px; background: rgba(0,0,0,.15); opacity: 1; }
 </style>
 </head>
 <body>
@@ -233,8 +246,6 @@ function layout() {
 // The nav: the "Work" pill, then each option; the one you're on has a filled dot.
 function drawNav() {
   const nav = $('nav');
-  const pill = document.createElement('span'); pill.className = 'pill'; pill.textContent = 'Work';
-  nav.appendChild(pill);
   TABS.forEach((t, i) => {
     if (t === 'software' || t === 'notes') { const g = document.createElement('span'); g.className = 'gap'; nav.appendChild(g); }
     const b = document.createElement('button'); b.type = 'button'; b.dataset.tab = t; b.textContent = t;
