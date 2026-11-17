@@ -121,6 +121,15 @@
                 inset 0 -14px 30px rgba(0,0,0,.06), 0 26px 60px rgba(0,0,0,.14), 0 3px 10px rgba(0,0,0,.08);
   }
   .iris.drawn svg { position: relative; }
+  @media (max-width: 600px) { .iris.drawn .ring { --d: 62vw; } }
+  /* A soft light that follows the pointer across the glass. */
+  .iris.drawn .ring::after {
+    content: ""; position: absolute; inset: 0; border-radius: 50%; pointer-events: none;
+    background: radial-gradient(circle at var(--lx, 35%) var(--ly, 25%), rgba(255,255,255,.75), rgba(255,255,255,0) 42%);
+    mix-blend-mode: soft-light; opacity: .9; transition: opacity .3s;
+  }
+  .iris.drawn .pupil:hover .hub, .iris.drawn .pupil:focus-visible .hub { fill: url(#hubPink); stroke: rgba(255,255,255,.95); }
+  .iris.drawn .pupil:hover .word { fill: #fff; }
   .iris.drawn svg { display: block; width: 100%; height: 100%; overflow: visible; color: #111; }
   .iris.drawn [data-tab] { cursor: pointer; outline: none; }
   .iris.drawn text { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; fill: #6b6b6b; transition: fill .2s; }
@@ -142,7 +151,8 @@
   .iris.drawn .grab { fill: transparent; }
   .iris.drawn .mword { font-size: 18px; fill: #8a8a8a; }
   .iris.drawn .meet [data-tab]:hover .mword, .iris.drawn [data-tab]:hover > .word { fill: #111; }
-  .iris.drawn [data-tab].lit .area { fill: rgba(70,72,82,.12); }
+  .iris.drawn [data-tab].lit .area, .iris.drawn [data-tab].kept .area { fill: rgba(70,72,82,.12); }
+  .iris.drawn [data-tab].kept > .word { fill: #111; }
   /* Where you are: its quarter is tinted and its word is pink; with everything showing, the middle is. */
   /* Where you are: a darker, smoky glass segment with a white word. */
   .iris.drawn [data-tab][aria-pressed="true"] .area { fill: rgba(70,72,82,.30); }
@@ -420,6 +430,7 @@ function drawIris() {
   let m = `<defs>
     <radialGradient id="bead" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#9a9aa2"/><stop offset=".45" stop-color="#3a3a40"/><stop offset="1" stop-color="#111"/></radialGradient>
     <radialGradient id="hubGlass" cx="40%" cy="30%" r="80%"><stop offset="0" stop-color="#fff"/><stop offset=".6" stop-color="#f1f1f4"/><stop offset="1" stop-color="#dcdce2"/></radialGradient>
+    <radialGradient id="hubPink" cx="40%" cy="30%" r="80%"><stop offset="0" stop-color="#ffc2de"/><stop offset=".55" stop-color="#ff5aa8"/><stop offset="1" stop-color="#d1146f"/></radialGradient>
     <radialGradient id="hubDark" cx="40%" cy="30%" r="80%"><stop offset="0" stop-color="#9c9ca6"/><stop offset=".6" stop-color="#6e6e78"/><stop offset="1" stop-color="#55555e"/></radialGradient>
   </defs>`;
   // A word just outside the rim at an angle, upright, anchored away from the circle.
@@ -491,7 +502,17 @@ function drawIris() {
     g.addEventListener('blur', () => on(false));
   });
   // The meeting words show while "all" is the open choice, or while you hover the middle.
-  markTab = t => iris.classList.toggle('meeting', !t || !['software', 'brand', 'tools', 'fun'].includes(t));
+  markTab = t => {
+    iris.classList.toggle('meeting', !t || !['software', 'brand', 'tools', 'fun'].includes(t));
+    const pair = HOW[t] ? HOW[t].slice(0, 2) : [];
+    svg.querySelectorAll('[data-tab]').forEach(q => q.classList.toggle('kept', pair.includes(q.dataset.tab)));
+  };
+  // The light on the glass follows the pointer.
+  iris.addEventListener('pointermove', e => {
+    const b = ring.getBoundingClientRect();
+    ring.style.setProperty('--lx', ((e.clientX - b.left) / b.width * 100).toFixed(1) + '%');
+    ring.style.setProperty('--ly', ((e.clientY - b.top) / b.height * 100).toFixed(1) + '%');
+  });
 }
 // Twelve small dots around the dot, in the iris's shape, for when it is hovered.
 for (let k = 0; k < 8; k++) { const i = document.createElement('i'); i.style.setProperty('--a', k * 45 + 'deg'); i.style.setProperty('--s', (k % 2 ? 3 : 5) + 'px'); dot.appendChild(i); }
