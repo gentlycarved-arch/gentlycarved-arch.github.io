@@ -385,6 +385,14 @@
   /* Start the iris in the middle of the screen; it stays there as you scroll. */
   .stage .mid { padding-top: max(0px, calc(50vh - 200px - 110px)); }
   .stage.stacked .mid { padding-top: 0; }
+
+  /* Airy, like sourcetype's index: generous space between cards, each centred in its column. */
+  .stage .side { gap: 28px; }
+  .stage .side .col { gap: 90px; align-items: center; }
+  .stage .side .col > * { flex: none; }
+  .stage .side .col .other { width: 76%; }
+  .stage .side .col .other .tile { width: 100% !important; }
+  @media (max-width: 900px) { .stage .side .col { gap: 48px; } }
 </style>
 </head>
 <body>
@@ -574,14 +582,21 @@ function layout() {
     cols = Array.from({ length: narrow }, col); below.append(...cols);
     stage.append(mid, below);
   }
-  const h = new Array(cols.length).fill(0);
+  // Each column starts at a different height, like sourcetype's staggered index.
+  const STAGGER = perSide === 2 ? [0, .9, .45, 1.3] : perSide === 1 ? [0, .7] : [0, .5];
+  cols.forEach((c, i) => c.style.paddingTop = `${STAGGER[i % STAGGER.length] * 280}px`);
+  const h = STAGGER.slice(0, cols.length).map(v => v);
+  while (h.length < cols.length) h.push(0);
   for (const it of list) {
     const other = !('kind' in it);
     const card = other ? fig(it, figureForOther) : fig(it, figureFor);
     if (!other) { card.querySelector('.pic').style.aspectRatio = `${it.w} / ${it.h}`; card.classList.remove('fill'); }
+    // Like sourcetype's index: wide pieces sit wider, tall ones narrower, centred in their column.
+    const r = other ? 1 : it.w / it.h, share = r > 1.15 ? .9 : r < .9 ? .66 : .76;
+    card.style.width = (share * 100) + '%';
     const k = h.indexOf(Math.min(...h));
     cols[k].appendChild(card);
-    h[k] += (other ? 1 : it.h / it.w) + .14 + (it.caption ? .1 + it.caption.length / 600 : 0);
+    h[k] += share * ((other ? 1 : it.h / it.w) + .14 + (it.caption ? .1 + it.caption.length / 600 : 0)) + .45;
   }
   view.replaceChildren(stage);
 }
