@@ -6,6 +6,9 @@
 <title>Native · Tahreem Rehman</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="../../media/me-metal.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:wght@400;600&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; }
   html, body { margin: 0; background: #fafafa; color: #1d1d1d; }
@@ -60,6 +63,49 @@
   .frame { background: #e9ecee; border-color: rgba(57,59,58,.08); }
   .gate { background: #dee2e5; }
   .gate input { border-bottom-color: #393b3a; color: #393b3a; }
+
+  /* Type and colour to match the work page: STIX Two Text for reading, small grey sans for labels,
+     black on light grey, and pictures in black and white until hovered. */
+  :root { --ink: #000; --muted: rgba(0,0,0,.55); --bg: #f5f5f5; --serif: "STIX Two Text", "Times New Roman", serif; }
+  html, body { background: var(--bg); color: var(--ink); }
+  body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 15px; line-height: 20px; letter-spacing: .02em; }
+  article { max-width: 640px; padding-top: 40px; }
+  .back { font-size: 14px; color: var(--muted); margin-bottom: 90px; }
+  .back:hover { color: var(--ink); }
+  h1 { font: 400 72px/1 var(--serif); letter-spacing: .01em; margin: 0 0 14px; }
+  .when { color: var(--muted); font-size: 14px; margin: 0 0 48px; }
+  p, li { font: 17.5px/25px var(--serif); letter-spacing: .01em; }
+  p { margin: 0 0 22px; }
+  figcaption, .note { font: 14px/20px "Helvetica Neue", Helvetica, Arial, sans-serif; color: var(--muted); }
+  .frame { background: #fff; border-color: rgba(0,0,0,.08); }
+  video { filter: grayscale(1); transition: filter 1.8s ease; }
+  figure:hover video { filter: grayscale(0); }
+  .gate { background: var(--bg); }
+  .gate input { border-bottom-color: var(--ink); color: var(--ink); }
+  @media (max-width: 760px) { h1 { font-size: 52px; } .back { margin-bottom: 60px; } }
+
+  /* The same visual language as the work page: round photo and capsule nav on top,
+     a big centred serif title, flat pictures in black and white until hovered. */
+  header { position: sticky; top: 0; z-index: 5; display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 22px 16px 16px; background: var(--bg); }
+  .me { display: block; width: 64px; height: 64px; border-radius: 50%;
+    background: url("../../media/me-computer.jpg") 47% 32% / auto 175% no-repeat;
+    filter: grayscale(1); transition: filter 1.8s ease; box-shadow: 0 0 0 1px rgba(0,0,0,.1); }
+  .me:hover { filter: grayscale(0); }
+  nav { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 2px; padding: 5px;
+    background: #fff; border: 1px solid rgba(0,0,0,.1); border-radius: 999px; box-shadow: 0 1px 2px rgba(0,0,0,.04); max-width: calc(100vw - 32px); }
+  nav .opt { font-size: 14px; line-height: 20px; padding: 5px 12px 4px; border-radius: 999px; color: var(--ink); text-decoration: none; transition: background-color .2s; }
+  nav .opt.between { color: var(--muted); }
+  nav .opt:hover { background: rgba(0,0,0,.06); }
+  nav .gap { width: 1px; height: 16px; margin: 0 6px; background: rgba(0,0,0,.15); }
+  article { padding-top: 0; }
+  h1 { text-align: center; font-size: 84px; margin: 90px 0 16px; }
+  .when { text-align: center; margin-bottom: 80px; }
+  .frame { border: 0; border-radius: 0; box-shadow: none; background: transparent; }
+  figure { margin-top: 48px; margin-bottom: 56px; }
+  figcaption { text-align: left; max-width: none; margin-top: 12px; }
+  @media (max-width: 760px) { nav { border-radius: 22px; } h1 { font-size: 56px; margin-top: 60px; } .when { margin-bottom: 50px; } }
+
+  p.when, p.note { font: 14px/20px "Helvetica Neue", Helvetica, Arial, sans-serif; letter-spacing: .02em; color: var(--muted); }
 </style>
 </head>
 <body>
@@ -71,8 +117,12 @@
   </form>
 </div>
 
-<article id="page" hidden>
-  <a class="back" href="../#software">work</a>
+<div id="page" hidden>
+<header>
+  <a class="me" href="/" aria-label="Tahreem as a child at the computer; home"></a>
+  <nav aria-label="Kinds of work"><a class="opt" href="../">all</a><span class="gap"></span><a class="opt" href="../#software">software</a><a class="opt between" href="../#websites">websites</a><a class="opt" href="../#brand">brand</a><a class="opt between" href="../#merch">merch</a><a class="opt" href="../#fun">fun</a><a class="opt between" href="../#toys">toys</a><a class="opt" href="../#tools">tools</a><a class="opt between" href="../#products">products</a><a class="opt between" href="../#systems">systems</a><span class="gap"></span><a class="opt" href="../#notes">notes</a></nav>
+</header>
+<article>
   <h1>Native</h1>
   <p class="when">native.works, 2026</p>
   <p>Native is a writing &amp; design studio that helps technology companies articulate what they believe and find their believers. I designed its website and identity.</p>
@@ -85,6 +135,7 @@
   <figure class="wide"><div class="frame"><video muted loop playsinline preload="none" style="aspect-ratio: 1920 / 1080" poster="../../media/native/native-article-light-dark-20261111-1920x1080.jpg" data-src="../../media/native/native-article-light-dark-20261111-1920x1080.mp4" aria-label="Articles read in light and in dark."></video></div></figure>
   <figure class="square"><div class="frame"><video muted loop playsinline preload="none" style="aspect-ratio: 1080 / 1080" poster="../../media/native/native-footer-specimen-card-1080.jpg" data-src="../../media/native/native-footer-specimen-card-1080.mp4" aria-label="The footer carries a specimen card for the region’s glyph."></video></div></figure>
 </article>
+</div>
 
 <script>
 // Not real security, like the work page: it only keeps this out of casual view.
