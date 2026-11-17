@@ -113,7 +113,10 @@ const BETWEEN = {
   products: ['tools', 'software', 'tools people open every day to do their work'],
   systems:  ['brand', 'tools', 'tools that make a brand: palettes, type, marks'],
 };
-const TABS = ['all', ...MAIN, ...Object.keys(BETWEEN), 'notes'];
+// In the nav each in-between word sits between the two kinds it joins, going round:
+// software · websites · brand · merch · fun · toys · tools · products (which joins tools back to software).
+// Systems joins brand and tools, which can't also sit side by side in one line, so it comes last.
+const TABS = ['all', 'software', 'websites', 'brand', 'merch', 'fun', 'toys', 'tools', 'products', 'systems', 'notes'];
 let tab = 'all';
 
 const $ = id => document.getElementById(id);
@@ -215,7 +218,7 @@ function drawNav() {
   const pill = document.createElement('span'); pill.className = 'pill'; pill.textContent = 'Work';
   nav.appendChild(pill);
   TABS.forEach((t, i) => {
-    if (t === 'websites' || t === 'notes') { const g = document.createElement('span'); g.className = 'gap'; nav.appendChild(g); }
+    if (t === 'software' || t === 'notes') { const g = document.createElement('span'); g.className = 'gap'; nav.appendChild(g); }
     const b = document.createElement('button'); b.type = 'button'; b.dataset.tab = t; b.textContent = t;
     if (BETWEEN[t]) { b.classList.add('between'); b.title = `${BETWEEN[t][0]} + ${BETWEEN[t][1]}: ${BETWEEN[t][2]}`; }
     b.addEventListener('click', () => setTab(t));
