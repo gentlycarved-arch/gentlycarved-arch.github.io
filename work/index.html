@@ -327,6 +327,23 @@
   .iris.drawn .hub, .iris.drawn .pupil:hover .hub { fill: #f3f8e8; stroke: #c4d6a0; }
   .iris.drawn .pupil[aria-pressed="true"] .hub { fill: #cfe3a6; stroke: var(--lime); }
   .iris.drawn [data-tab][aria-pressed="true"] .area, .iris.drawn [data-tab].lit .area, .iris.drawn [data-tab].kept .area { fill: rgba(130,170,60,.30); }
+
+  /* The iris all in one green; words and dots in a darker green of the same hue.
+     What's picked is bold with a slightly larger dot, like hover. */
+  .iris.drawn .plate, .iris.drawn .hub, .iris.drawn .pupil:hover .hub, .iris.drawn .pupil[aria-pressed="true"] .hub { fill: #e5efcf; stroke: none; }
+  .iris.drawn .hub { stroke: #6d8042; stroke-width: .8; stroke-opacity: .5; }
+  .iris.drawn [data-tab] .area, .iris.drawn [data-tab]:hover .area, .iris.drawn [data-tab][aria-pressed="true"] .area,
+  .iris.drawn [data-tab].lit .area, .iris.drawn [data-tab].kept .area { fill: transparent; }
+  .iris.drawn .word, .iris.drawn .caption, .iris.drawn [data-tab]:hover .word, .iris.drawn [data-tab][aria-pressed="true"] .word,
+  .iris.drawn [data-tab].lit .word, .iris.drawn [data-tab].kept > .word, .iris.drawn .pupil:hover .caption { fill: #4d6024; }
+  .iris.drawn .mword, .iris.drawn .meet [data-tab]:hover .mword, .iris.drawn .meet [data-tab][aria-pressed="true"] .mword { fill: #6d8042; }
+  .iris.drawn .bigdot, .iris.drawn .smalldot, .iris.drawn [data-tab]:hover .bigdot, .iris.drawn [data-tab][aria-pressed="true"] .bigdot,
+  .iris.drawn .meet [data-tab]:hover .smalldot, .iris.drawn .meet [data-tab][aria-pressed="true"] .smalldot,
+  .iris.drawn [data-tab].lit .bigdot, .iris.drawn [data-tab].kept .bigdot { fill: #4d6024; }
+  .iris.drawn [data-tab][aria-pressed="true"] .word, .iris.drawn .meet [data-tab][aria-pressed="true"] .mword,
+  .iris.drawn .pupil[aria-pressed="true"] .caption, .iris.drawn [data-tab].kept > .word { font-weight: 600; }
+  .iris.drawn [data-tab][aria-pressed="true"] .bigdot, .iris.drawn .meet [data-tab][aria-pressed="true"] .smalldot,
+  .iris.drawn [data-tab].kept .bigdot { transform: scale(1.3); }
 </style>
 </head>
 <body>
