@@ -37,16 +37,20 @@
   li { margin-bottom: 6px; }
 
   figure { margin: 44px -120px 48px; }
+  figure.square, figure.tall { margin-top: 44px; margin-bottom: 48px; }
   .frame {
     border-radius: 14px; overflow: hidden; background: #fff;
     border: 1px solid rgba(0,0,0,.06);
     box-shadow: 0 1px 2px rgba(0,0,0,.03), 0 24px 70px rgba(0,0,0,.07);
   }
-  video { display: block; width: 100%; height: auto; aspect-ratio: 1440 / 900; cursor: pointer; }
+  video { display: block; width: 100%; height: auto; cursor: pointer; }
+  figure.square { margin-left: auto; margin-right: auto; max-width: 560px; }
+  figure.tall { margin-left: auto; margin-right: auto; max-width: 480px; }
+  .bare video { background: transparent; }
   figcaption { max-width: 640px; margin: 14px auto 0; padding: 0 0 0 0; color: #999; font-size: 14px; text-align: center; }
   .note { color: #999; font-size: 14px; margin-top: 56px; }
 
-  @media (max-width: 900px) { figure { margin-left: 0; margin-right: 0; } }
+  @media (max-width: 900px) { figure.wide { margin-left: 0; margin-right: 0; } }
 </style>
 </head>
 <body>
@@ -63,28 +67,28 @@
   <h1>CoreTable</h1>
   <p class="when">GeologicAI, 2026</p>
   <p>CoreTable is where geologists log drill core. This is a walkthrough of the prototype, from opening a workspace to signing off a log with teammates.</p>
-  <figure><div class="frame"><video muted loop playsinline preload="none" poster="../../media/coretable/01-launcher-and-workspace.jpg" data-src="../../media/coretable/01-launcher-and-workspace.mp4" aria-label="Open Core Photos and the Striplog from the Launcher and lay them side by side. The panes share depth, so hovering one shows the same spot in the other."></video></div><figcaption>Open Core Photos and the Striplog from the Launcher and lay them side by side. The panes share depth, so hovering one shows the same spot in the other.</figcaption></figure>
+  <figure class="wide"><div class="frame"><video muted loop playsinline preload="none" style="aspect-ratio: 1440 / 900" poster="../../media/coretable/01-launcher-and-workspace.jpg" data-src="../../media/coretable/01-launcher-and-workspace.mp4" aria-label="Open Core Photos and the Striplog from the Launcher and lay them side by side. The panes share depth, so hovering one shows the same spot in the other."></video></div><figcaption>Open Core Photos and the Striplog from the Launcher and lay them side by side. The panes share depth, so hovering one shows the same spot in the other.</figcaption></figure>
   <p>I design every interface at GeologicAI, from the hardware that scans core to CoreTable and AI products for mineral discovery. These recordings come from the working prototype, with demo data.</p>
   <p>Logging happens on the Striplog. Select an interval and describe it, draw a new one, let Smart Fill take care of the repetition, and undo anything.</p>
-  <figure><div class="frame"><video muted loop playsinline preload="none" poster="../../media/coretable/02-logging-on-the-striplog.jpg" data-src="../../media/coretable/02-logging-on-the-striplog.mp4" aria-label="Logging happens on the Striplog. Select an interval and describe it, draw a new one, let Smart Fill take care of the repetition, and undo anything."></video></div></figure>
+  <figure class="wide"><div class="frame"><video muted loop playsinline preload="none" style="aspect-ratio: 1440 / 900" poster="../../media/coretable/02-logging-on-the-striplog.jpg" data-src="../../media/coretable/02-logging-on-the-striplog.mp4" aria-label="Logging happens on the Striplog. Select an interval and describe it, draw a new one, let Smart Fill take care of the repetition, and undo anything."></video></div></figure>
   <p>Shortcuts for people who log all day: Shift to snap, Alt to resize, double-click to fill a gap, right-click to split.</p>
-  <figure><div class="frame"><video muted loop playsinline preload="none" poster="../../media/coretable/03-logging-shortcuts.jpg" data-src="../../media/coretable/03-logging-shortcuts.mp4" aria-label="Shortcuts for people who log all day: Shift to snap, Alt to resize, double-click to fill a gap, right-click to split."></video></div></figure>
+  <figure class="wide"><div class="frame"><video muted loop playsinline preload="none" style="aspect-ratio: 1440 / 900" poster="../../media/coretable/03-logging-shortcuts.jpg" data-src="../../media/coretable/03-logging-shortcuts.mp4" aria-label="Shortcuts for people who log all day: Shift to snap, Alt to resize, double-click to fill a gap, right-click to split."></video></div></figure>
   <p>Intervals can also be drawn and adjusted straight on the core photos.</p>
-  <figure><div class="frame"><video muted loop playsinline preload="none" poster="../../media/coretable/04-logging-on-core-photos.jpg" data-src="../../media/coretable/04-logging-on-core-photos.mp4" aria-label="Intervals can also be drawn and adjusted straight on the core photos."></video></div></figure>
+  <figure class="wide"><div class="frame"><video muted loop playsinline preload="none" style="aspect-ratio: 1440 / 900" poster="../../media/coretable/04-logging-on-core-photos.jpg" data-src="../../media/coretable/04-logging-on-core-photos.mp4" aria-label="Intervals can also be drawn and adjusted straight on the core photos."></video></div></figure>
   <p>Add and hide tracks, blend overlays over the photos, add a curve and set its range.</p>
-  <figure><div class="frame"><video muted loop playsinline preload="none" poster="../../media/coretable/05-tracks-curves-and-overlays.jpg" data-src="../../media/coretable/05-tracks-curves-and-overlays.mp4" aria-label="Add and hide tracks, blend overlays over the photos, add a curve and set its range."></video></div></figure>
+  <figure class="wide"><div class="frame"><video muted loop playsinline preload="none" style="aspect-ratio: 1440 / 900" poster="../../media/coretable/05-tracks-curves-and-overlays.jpg" data-src="../../media/coretable/05-tracks-curves-and-overlays.mp4" aria-label="Add and hide tracks, blend overlays over the photos, add a curve and set its range."></video></div></figure>
   <p>Apply the project’s viewer template, change it, save your own, and switch back.</p>
-  <figure><div class="frame"><video muted loop playsinline preload="none" poster="../../media/coretable/06-viewer-templates.jpg" data-src="../../media/coretable/06-viewer-templates.mp4" aria-label="Apply the project’s viewer template, change it, save your own, and switch back."></video></div></figure>
+  <figure class="wide"><div class="frame"><video muted loop playsinline preload="none" style="aspect-ratio: 1440 / 900" poster="../../media/coretable/06-viewer-templates.jpg" data-src="../../media/coretable/06-viewer-templates.mp4" aria-label="Apply the project’s viewer template, change it, save your own, and switch back."></video></div></figure>
   <p>View mode is read-only, with hover cards for the details and a switch to turn them off.</p>
-  <figure><div class="frame"><video muted loop playsinline preload="none" poster="../../media/coretable/07-view-mode-and-hover-details.jpg" data-src="../../media/coretable/07-view-mode-and-hover-details.mp4" aria-label="View mode is read-only, with hover cards for the details and a switch to turn them off."></video></div></figure>
+  <figure class="wide"><div class="frame"><video muted loop playsinline preload="none" style="aspect-ratio: 1440 / 900" poster="../../media/coretable/07-view-mode-and-hover-details.jpg" data-src="../../media/coretable/07-view-mode-and-hover-details.mp4" aria-label="View mode is read-only, with hover cards for the details and a switch to turn them off."></video></div></figure>
   <p>Depth correction: measure each tube of core, split with Shift, mark rubble with Alt, and check every piece.</p>
-  <figure><div class="frame"><video muted loop playsinline preload="none" poster="../../media/coretable/08-depth-correction-measuring.jpg" data-src="../../media/coretable/08-depth-correction-measuring.mp4" aria-label="Depth correction: measure each tube of core, split with Shift, mark rubble with Alt, and check every piece."></video></div></figure>
+  <figure class="wide"><div class="frame"><video muted loop playsinline preload="none" style="aspect-ratio: 1440 / 900" poster="../../media/coretable/08-depth-correction-measuring.jpg" data-src="../../media/coretable/08-depth-correction-measuring.mp4" aria-label="Depth correction: measure each tube of core, split with Shift, mark rubble with Alt, and check every piece."></video></div></figure>
   <p>Place the driller’s depth blocks, with live checks, legend tips and a visibility toggle on every layer.</p>
-  <figure><div class="frame"><video muted loop playsinline preload="none" poster="../../media/coretable/09-depth-blocks-checks-and-legend.jpg" data-src="../../media/coretable/09-depth-blocks-checks-and-legend.mp4" aria-label="Place the driller’s depth blocks, with live checks, legend tips and a visibility toggle on every layer."></video></div></figure>
+  <figure class="wide"><div class="frame"><video muted loop playsinline preload="none" style="aspect-ratio: 1440 / 900" poster="../../media/coretable/09-depth-blocks-checks-and-legend.jpg" data-src="../../media/coretable/09-depth-blocks-checks-and-legend.mp4" aria-label="Place the driller’s depth blocks, with live checks, legend tips and a visibility toggle on every layer."></video></div></figure>
   <p>Everything saves as you go. A finished log is signed off, and every version can be looked back on and restored.</p>
-  <figure><div class="frame"><video muted loop playsinline preload="none" poster="../../media/coretable/10-autosave-sign-off-and-history.jpg" data-src="../../media/coretable/10-autosave-sign-off-and-history.mp4" aria-label="Everything saves as you go. A finished log is signed off, and every version can be looked back on and restored."></video></div></figure>
+  <figure class="wide"><div class="frame"><video muted loop playsinline preload="none" style="aspect-ratio: 1440 / 900" poster="../../media/coretable/10-autosave-sign-off-and-history.jpg" data-src="../../media/coretable/10-autosave-sign-off-and-history.mp4" aria-label="Everything saves as you go. A finished log is signed off, and every version can be looked back on and restored."></video></div></figure>
   <p>See who else is in the log, follow them, accept a teammate’s new depths, and toggle their outlines.</p>
-  <figure><div class="frame"><video muted loop playsinline preload="none" poster="../../media/coretable/11-working-with-teammates.jpg" data-src="../../media/coretable/11-working-with-teammates.mp4" aria-label="See who else is in the log, follow them, accept a teammate’s new depths, and toggle their outlines."></video></div></figure>
+  <figure class="wide"><div class="frame"><video muted loop playsinline preload="none" style="aspect-ratio: 1440 / 900" poster="../../media/coretable/11-working-with-teammates.jpg" data-src="../../media/coretable/11-working-with-teammates.mp4" aria-label="See who else is in the log, follow them, accept a teammate’s new depths, and toggle their outlines."></video></div></figure>
 </article>
 
 <script>

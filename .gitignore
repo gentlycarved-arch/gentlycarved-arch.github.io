@@ -53,8 +53,6 @@ media/posters/*
 !media/learn-more.jpg
 !media/me-computer.jpg
 !media/me-metallic.png
-!media/native-header.jpg
-!media/native-montage.gif
 !media/negative-space-button-square.mp4
 !media/negative-space-button.mp4
 !media/photo-9062.jpg
@@ -104,3 +102,17 @@ media/posters/*
 !media/corescada/
 !media/coretable/*
 !media/corescada/*
+
+# Native: the new site
+!media/native-site.mp4
+!media/native-glyphs.mp4
+!media/posters/native-site.jpg
+!media/posters/native-glyphs.jpg
+!work/native/
+!work/native/index.html
+!work/toronto-society/
+!work/toronto-society/index.html
+!media/native/
+!media/native/*
+!media/toronto-society/
+!media/toronto-society/*

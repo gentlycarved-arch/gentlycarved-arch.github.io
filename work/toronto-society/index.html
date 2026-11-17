@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Toronto Society · Tahreem Rehman</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="../../media/me-metal.png">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #fff; color: #1d1d1d; }
+  body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 17px; line-height: 1.55; letter-spacing: -0.005em;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+
+  /* Password screen, the same as the work page */
+  .gate { position: fixed; inset: 0; z-index: 9; display: grid; place-items: center; background: #fff; }
+  .gate form { display: grid; gap: 10px; justify-items: center; }
+  .gate label { font-size: 14px; }
+  .gate input {
+    font: inherit; font-size: 15px; text-align: center; width: 220px; padding: 6px 0;
+    border: 0; border-bottom: 1px solid #111; border-radius: 0; background: transparent; color: #111; outline: none;
+  }
+  .gate .no { color: #888; min-height: 1.35em; font-size: 14px; }
+
+  /* One reading column; the videos sit a little wider than the text */
+  article { max-width: 640px; margin: 0 auto; padding: 56px 20px 120px; }
+  .back { display: inline-block; font-size: 14px; color: #999; text-decoration: none; margin-bottom: 64px; }
+  .back:hover { color: #1d1d1d; }
+  h1 { font: inherit; font-weight: 500; margin: 0; }
+  .when { color: #999; margin: 2px 0 36px; }
+  p { margin: 0 0 22px; }
+  ul { margin: 0 0 22px; padding-left: 1.1em; }
+  li { margin-bottom: 6px; }
+
+  figure { margin: 44px -120px 48px; }
+  figure.square, figure.tall { margin-top: 44px; margin-bottom: 48px; }
+  .frame {
+    border-radius: 14px; overflow: hidden; background: #fff;
+    border: 1px solid rgba(0,0,0,.06);
+    box-shadow: 0 1px 2px rgba(0,0,0,.03), 0 24px 70px rgba(0,0,0,.07);
+  }
+  video { display: block; width: 100%; height: auto; cursor: pointer; }
+  figure.square { margin-left: auto; margin-right: auto; max-width: 560px; }
+  figure.tall { margin-left: auto; margin-right: auto; max-width: 480px; }
+  .bare video { background: transparent; }
+  figcaption { max-width: 640px; margin: 14px auto 0; padding: 0 0 0 0; color: #999; font-size: 14px; text-align: center; }
+  .note { color: #999; font-size: 14px; margin-top: 56px; }
+
+  @media (max-width: 900px) { figure.wide { margin-left: 0; margin-right: 0; } }
+</style>
+</head>
+<body>
+<div class="gate" id="gate" hidden>
+  <form id="form" autocomplete="off">
+    <label for="pw">password</label>
+    <input id="pw" type="password" autofocus>
+    <div class="no" id="no" aria-live="polite"></div>
+  </form>
+</div>
+
+<article id="page" hidden>
+  <a class="back" href="../#software">work</a>
+  <h1>The Toronto Society</h1>
+  <p class="when">2026</p>
+  <p>The Toronto Society is a new home for learning and research in Toronto. I designed its website and identity, including the pages for The Viaduct, its lecture series.</p>
+  <figure class="tall"><div class="bare"><video muted loop playsinline preload="none" style="aspect-ratio: 1080 / 1350" poster="../../media/toronto-society/frameless-site-tour.jpg" data-src="../../media/toronto-society/frameless-site-tour.mp4" aria-label="A tour of the site, from the landing page through the lectures to About."></video></div><figcaption>A tour of the site, from the landing page through the lectures to About.</figcaption></figure>
+  <p>The landing page: the engraved angel inside the society’s name, with Proceedings and Our Lectures on either side.</p>
+  <figure class="tall"><div class="bare"><video muted loop playsinline preload="none" style="aspect-ratio: 1080 / 1350" poster="../../media/toronto-society/frameless-landing-light-hover.jpg" data-src="../../media/toronto-society/frameless-landing-light-hover.mp4" aria-label="The landing page: the engraved angel inside the society’s name, with Proceedings and Our Lectures on either side."></video></div></figure>
+  <p>In light mode the site feels like paper; in dark mode, like a glowing screen.</p>
+  <figure class="tall"><div class="bare"><video muted loop playsinline preload="none" style="aspect-ratio: 1080 / 1350" poster="../../media/toronto-society/frameless-landing-light-light-to-dark.jpg" data-src="../../media/toronto-society/frameless-landing-light-light-to-dark.mp4" aria-label="In light mode the site feels like paper; in dark mode, like a glowing screen."></video></div></figure>
+  <p>The Viaduct, the society’s lecture series, season by season.</p>
+  <figure class="tall"><div class="bare"><video muted loop playsinline preload="none" style="aspect-ratio: 1080 / 1350" poster="../../media/toronto-society/frameless-viaduct-light-scroll.jpg" data-src="../../media/toronto-society/frameless-viaduct-light-scroll.mp4" aria-label="The Viaduct, the society’s lecture series, season by season."></video></div></figure>
+  <p>Hovering a season brings up its poster.</p>
+  <figure class="tall"><div class="bare"><video muted loop playsinline preload="none" style="aspect-ratio: 1080 / 1350" poster="../../media/toronto-society/frameless-season-four-light-hover.jpg" data-src="../../media/toronto-society/frameless-season-four-light-hover.mp4" aria-label="Hovering a season brings up its poster."></video></div></figure>
+  <p>Every lecture has a page of its own.</p>
+  <figure class="tall"><div class="bare"><video muted loop playsinline preload="none" style="aspect-ratio: 1080 / 1350" poster="../../media/toronto-society/frameless-lecture-full-dark-scroll.jpg" data-src="../../media/toronto-society/frameless-lecture-full-dark-scroll.mp4" aria-label="Every lecture has a page of its own."></video></div></figure>
+  <p>Transcripts, set for reading.</p>
+  <figure class="tall"><div class="bare"><video muted loop playsinline preload="none" style="aspect-ratio: 1080 / 1350" poster="../../media/toronto-society/frameless-transcript-light-scroll.jpg" data-src="../../media/toronto-society/frameless-transcript-light-scroll.mp4" aria-label="Transcripts, set for reading."></video></div></figure>
+  <p>About, in light and dark.</p>
+  <figure class="tall"><div class="bare"><video muted loop playsinline preload="none" style="aspect-ratio: 1080 / 1350" poster="../../media/toronto-society/frameless-about-photo-light-light-to-dark.jpg" data-src="../../media/toronto-society/frameless-about-photo-light-light-to-dark.mp4" aria-label="About, in light and dark."></video></div></figure>
+</article>
+
+<script>
+// Not real security, like the work page: it only keeps this out of casual view.
+const PASSWORD = 'affogato';
+const gate = document.getElementById('gate'), page = document.getElementById('page');
+let ok = false;
+try { ok = sessionStorage.getItem('work') === '1'; } catch (e) {}
+
+function show() {
+  gate.remove(); page.hidden = false;
+  // Videos load only once unlocked, play while on screen, and a click pauses or plays them.
+  const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? e.target.play().catch(() => {}) : e.target.pause()), { rootMargin: '100px' });
+  page.querySelectorAll('video').forEach(v => {
+    v.src = v.dataset.src;
+    io.observe(v);
+    v.addEventListener('click', () => v.paused ? v.play() : v.pause());
+  });
+}
+if (ok) show();
+else {
+  gate.hidden = false;
+  document.getElementById('form').addEventListener('submit', e => {
+    e.preventDefault();
+    const pw = document.getElementById('pw');
+    if (pw.value.trim().toLowerCase() === PASSWORD) { try { sessionStorage.setItem('work', '1'); } catch (e) {} show(); }
+    else { document.getElementById('no').textContent = 'not quite'; pw.value = ''; }
+  });
+}
+</script>
+</body>
+</html>
