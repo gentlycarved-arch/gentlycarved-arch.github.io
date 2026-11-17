@@ -344,6 +344,47 @@
   .iris.drawn .pupil[aria-pressed="true"] .caption, .iris.drawn [data-tab].kept > .word { font-weight: 600; }
   .iris.drawn [data-tab][aria-pressed="true"] .bigdot, .iris.drawn .meet [data-tab][aria-pressed="true"] .smalldot,
   .iris.drawn [data-tab].kept .bigdot { transform: scale(1.3); }
+
+  /* How a pair meets: a curved line along the top of the iris, shown on hover. */
+  .iris.drawn .why { position: static; font-family: "STIX Two Text", Georgia, serif; font-size: 12.5px; fill: #4d6024; opacity: 0; transition: opacity .25s; pointer-events: none; }
+  .iris.drawn .why.on { opacity: 1; }
+
+  /* "all" is a filled dot with its word, like the others. */
+  .iris.drawn .alldot { fill: #4d6024; transform-box: fill-box; transform-origin: center; transition: transform .2s ease; }
+  .iris.drawn .pupil:hover .alldot, .iris.drawn .pupil:focus-visible .alldot, .iris.drawn .pupil[aria-pressed="true"] .alldot { transform: scale(1.3); }
+  .iris.drawn .pupil:hover .caption, .iris.drawn .pupil:focus-visible .caption { font-weight: 600; }
+  .iris.drawn .caption { font-size: 17px; }
+
+  /* Cards keep each piece's own shape, in columns. */
+  .cols { display: flex; gap: 10px; align-items: flex-start; }
+  .cols .col { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+  .cols .tile .pic { aspect-ratio: auto; }
+  .cols .tile img, .cols .tile video { height: auto; object-fit: contain; }
+
+  /* The iris always open, small, in the middle; the work on both sides of it. */
+  .dot { display: none !important; }
+  .stage { display: grid; grid-template-columns: minmax(0, 1fr) 400px minmax(0, 1fr); gap: 10px; align-items: start; }
+  .stage .side { display: flex; gap: 10px; align-items: flex-start; min-width: 0; }
+  .stage .side .col { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+  .stage .mid { align-self: stretch; position: relative; }
+  .iris.inline {
+    position: sticky; top: calc(50vh - 200px); inset: auto; z-index: 1; height: 400px;
+    display: grid; place-items: center; background: none !important;
+    -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+    opacity: 1 !important; visibility: visible !important; pointer-events: auto !important;
+  }
+  .iris.inline .ring { --d: 230px !important; transform: none !important; transition: none; }
+  .iris.inline .word, .iris.inline .caption { font-size: 26px; }
+  .iris.inline .mword { font-size: 20px; }
+  .iris.inline .why { font-size: 20px; }
+  .stage.stacked { display: block; }
+  .stage.stacked .mid { margin-bottom: 10px; }
+  .stage.stacked .iris.inline { position: relative; top: 0; height: 360px; }
+  .now { display: none; }
+
+  /* Start the iris in the middle of the screen; it stays there as you scroll. */
+  .stage .mid { padding-top: max(0px, calc(50vh - 200px - 110px)); }
+  .stage.stacked .mid { padding-top: 0; }
 </style>
 </head>
 <body>
@@ -466,6 +507,23 @@ function rows(list) {
   return out;
 }
 
+// Cards at their own shape, flowing into columns (each goes into the shortest column).
+function columns(list) {
+  const n = innerWidth > 900 ? 3 : innerWidth > 560 ? 2 : 1;
+  const g = document.createElement('div'); g.className = 'cols';
+  const cols = Array.from({ length: n }, () => { const c = document.createElement('div'); c.className = 'col'; g.appendChild(c); return c; });
+  const h = new Array(n).fill(0);
+  for (const it of list) {
+    const t = fig(it, figureFor);
+    t.querySelector('.pic').style.aspectRatio = `${it.w} / ${it.h}`;
+    t.classList.remove('fill');
+    const i = h.indexOf(Math.min(...h));
+    cols[i].appendChild(t);
+    h[i] += it.h / it.w + .12 + (it.caption ? .1 + it.caption.length / 700 : 0);
+  }
+  return g;
+}
+
 // Group pieces into projects, in the order each project first appears.
 function projects(list) {
   const groups = new Map();
@@ -474,7 +532,7 @@ function projects(list) {
     const sec = document.createElement('section'); sec.className = 'project';
     sec.dataset.name = name;
     sec.dataset.kinds = [...new Set(pieces.flatMap(p => p.tags).filter(t => ['software', 'brand', 'tools', 'fun'].includes(t)))].join(', ');
-    sec.append(...rows(pieces));
+    sec.append(columns(pieces));
     return sec;
   });
 }
@@ -491,24 +549,41 @@ const watch = new IntersectionObserver(entries => {
 const TABS = ['software', 'brand', 'tools', 'fun', 'websites', 'merch', 'toys', 'products', 'systems'];
 let tab = null, laidOut = '';
 function layout() {
-  const n = innerWidth > 700 ? 'wide' : 'narrow';
-  if (laidOut === tab + n) return;
-  laidOut = tab + n;
+  // The iris sits open in the middle; the work flows in columns on both sides of it.
+  const w = innerWidth, perSide = w > 1250 ? 2 : w > 900 ? 1 : 0, narrow = w > 560 ? 2 : 1;
+  const key = tab + ':' + perSide + ':' + narrow;
+  if (laidOut === key) return;
+  laidOut = key;
   document.querySelectorAll('.iris [data-tab]').forEach(b => b.setAttribute('aria-pressed', b.dataset.tab === (tab || '')));
   if (typeof markTab === 'function') markTab(tab);
-  const parts = [];
-  const heading = text => { const h = document.createElement('h2'); h.textContent = text; return h; };
-  if (tab === 'tools') {
-    parts.push(heading('by me'), ...projects(ITEMS.filter(it => it.tags.includes('tools'))));
-    const others = document.createElement('div'); others.className = 'row three others';
-    others.style.gridTemplateColumns = `repeat(${innerWidth > 700 ? 4 : 2}, minmax(0, 1fr))`;
-    OTHERS.forEach(t => others.appendChild(fig(t, figureForOther)));
-    parts.push(heading('by others'), others);
+  const list = tab === 'tools' ? [...ITEMS.filter(it => it.tags.includes('tools')), ...OTHERS]
+             : tab ? ITEMS.filter(it => it.tags.includes(tab)) : ITEMS;
+  const stage = document.createElement('div'); stage.className = 'stage' + (perSide ? '' : ' stacked');
+  const mid = document.createElement('div'); mid.className = 'mid'; mid.appendChild(iris);
+  const col = () => { const c = document.createElement('div'); c.className = 'col'; return c; };
+  let cols;
+  if (perSide) {
+    const left = document.createElement('div'), right = document.createElement('div');
+    left.className = right.className = 'side';
+    const L = Array.from({ length: perSide }, col), Rt = Array.from({ length: perSide }, col);
+    left.append(...L); right.append(...Rt);
+    stage.append(left, mid, right);
+    cols = [...L, ...Rt];
+  } else {
+    const below = document.createElement('div'); below.className = 'side';
+    cols = Array.from({ length: narrow }, col); below.append(...cols);
+    stage.append(mid, below);
   }
-  else parts.push(...projects(tab ? ITEMS.filter(it => it.tags.includes(tab)) : ITEMS));
-  view.replaceChildren(...parts);
-  watch.disconnect(); now.textContent = '';
-  view.querySelectorAll('.project').forEach(p => watch.observe(p));
+  const h = new Array(cols.length).fill(0);
+  for (const it of list) {
+    const other = !('kind' in it);
+    const card = other ? fig(it, figureForOther) : fig(it, figureFor);
+    if (!other) { card.querySelector('.pic').style.aspectRatio = `${it.w} / ${it.h}`; card.classList.remove('fill'); }
+    const k = h.indexOf(Math.min(...h));
+    cols[k].appendChild(card);
+    h[k] += (other ? 1 : it.h / it.w) + .14 + (it.caption ? .1 + it.caption.length / 600 : 0);
+  }
+  view.replaceChildren(stage);
 }
 
 // Picking from the iris shows that work and shrinks the eye to the dot at the top.
@@ -559,18 +634,19 @@ function drawIris() {
   let m = `<circle class="plate" cx="${C}" cy="${C}" r="${R}"/>`;
   for (const [t, a] of Object.entries(AREAS)) {
     const d = (a[0] + a[1]) / 2;
-    m += `<g data-tab="${t}" role="button" tabindex="0" aria-label="${t}">${sector(a)}${dot(d, 7, 'bigdot')}${edge(t, d, 14, 17, 'word')}</g>`;
+    m += `<g data-tab="${t}" role="button" tabindex="0" aria-label="${t}">${sector(a)}${dot(d, 7, 'bigdot')}${edge(t, d, 18, 26, 'word')}</g>`;
   }
   m += `<g class="meet">`;
   for (const [t, d] of Object.entries({ ...EDGE, ...RINGS })) {
     const [gx, gy] = pt(R + 26, d);
     m += `<g data-tab="${t}" role="button" tabindex="0" aria-label="${t}">
-      <circle class="grab" cx="${gx}" cy="${gy}" r="24"/>${dot(d, t in RINGS ? 3 : 4, 'smalldot')}${edge(t, d, 11, 12.5, 'mword')}</g>`;
+      <circle class="grab" cx="${gx}" cy="${gy}" r="24"/>${dot(d, t in RINGS ? 3 : 4, 'smalldot')}${edge(t, d, 14, 20, 'mword')}</g>`;
   }
   m += `</g>
     <g class="pupil" data-tab="" role="button" tabindex="0" aria-label="all">
-      <circle class="hub" cx="${C}" cy="${C}" r="${IN - 4}"/>
-      <text class="caption" x="${C}" y="${C + 4.5}" text-anchor="middle">all</text></g>`;
+      <circle class="grab" cx="${C}" cy="${C + 8}" r="22"/>
+      <circle class="alldot" cx="${C}" cy="${C}" r="7"/>
+      <text class="caption" x="${C}" y="${C + 36}" text-anchor="middle">all</text></g>`;
   const svg = document.createElementNS(NS, 'svg');
   svg.setAttribute('viewBox', '0 0 400 400');
   svg.innerHTML = m;
@@ -592,13 +668,21 @@ function drawIris() {
     g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setTab(g.dataset.tab); } });
   });
   // Hovering a meeting word lights up the two kinds it joins and says how they meet.
-  const why = document.createElement('p'); why.className = 'why'; ring.appendChild(why);
+  // The line that says how a pair meets runs along the top of the iris, curving with it.
+  const WR = R + 66, [wx0, wy0] = pt(WR, -170), [wx1, wy1] = pt(WR, -10);
+  const arcDef = document.createElementNS(NS, 'path');
+  arcDef.setAttribute('id', 'whyArc'); arcDef.setAttribute('fill', 'none');
+  arcDef.setAttribute('d', `M ${wx0},${wy0} A ${WR},${WR} 0 0,1 ${wx1},${wy1}`);
+  const why = document.createElementNS(NS, 'text'); why.setAttribute('class', 'why'); why.setAttribute('text-anchor', 'middle'); why.style.textAnchor = 'middle';
+  const whyPath = document.createElementNS(NS, 'textPath');
+  whyPath.setAttribute('href', '#whyArc'); whyPath.setAttribute('startOffset', (WR * rad(160) / 2).toFixed(1)); whyPath.setAttribute('text-anchor', 'middle');
+  why.appendChild(whyPath); svg.append(arcDef, why);
   svg.querySelectorAll('.meet [data-tab]').forEach(g => {
     const [a, b, line] = HOW[g.dataset.tab];
     const on = v => {
       svg.querySelectorAll(`[data-tab="${a}"], [data-tab="${b}"]`).forEach(q => q.classList.toggle('lit', v));
-      why.textContent = v ? `${a} + ${b}: ${line}` : '';
-      why.classList.toggle('on', v);
+      whyPath.textContent = v ? `${a} + ${b}: ${line}` : whyPath.textContent;
+      why.classList.toggle('on', v);   // stays written while it fades out
     };
     g.addEventListener('pointerenter', () => on(true));
     g.addEventListener('pointerleave', () => on(false));
@@ -620,11 +704,8 @@ function drawIris() {
 }
 // Twelve small dots around the dot, in the iris's shape, for when it is hovered.
 for (let k = 0; k < 8; k++) { const i = document.createElement('i'); i.style.setProperty('--a', k * 45 + 'deg'); i.style.setProperty('--s', (k % 2 ? 3 : 5) + 'px'); dot.appendChild(i); }
-function openIris(open) {
-  iris.classList.toggle('closed', !open);
-  dot.classList.toggle('on', !open);
-  document.body.style.overflow = open ? 'hidden' : '';
-}
+// The iris is always open now, so there's nothing to open or close.
+function openIris() { iris.classList.remove('closed'); iris.classList.add('inline'); }
 function setTab(t) {
   tab = TABS.includes(t) ? t : null;
   history.replaceState(null, '', location.pathname + location.search + (tab ? '#' + encodeURIComponent(tab) : ''));
