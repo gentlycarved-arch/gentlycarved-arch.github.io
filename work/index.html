@@ -34,16 +34,68 @@
   .gate.shake form { animation: shake .35s; }
   @keyframes shake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
 
-  /* Tabs: plain words along the top; the open one is underlined. */
-  .tabs { display: flex; gap: 28px; margin-bottom: 36px; }
-  .tabs button {
-    font: inherit; font-size: 15px; color: #111; background: none; border: 0; padding: 0;
-    cursor: pointer; text-decoration: underline; text-decoration-color: transparent;
-    text-underline-offset: 4px; text-decoration-thickness: 1px;
-    transition: text-decoration-color .2s;
+  /* The nav is an eye in the middle of the page: software, brand and tools sit on the iris,
+     and the pupil is the in-between button that shows everything. */
+  .iris {
+    position: fixed; inset: 0; z-index: 4;
+    display: grid; place-items: center;
+    background: rgba(255,255,255,.96);
+    transition: opacity .45s ease, visibility 0s linear 0s;
   }
-  .tabs button:hover { text-decoration-color: #bbb; }
-  .tabs button[aria-pressed="true"] { text-decoration-color: currentColor; }
+  .iris .ring {
+    --d: min(340px, 76vw);
+    position: relative; width: var(--d); height: var(--d);
+    border: 1px solid #111; border-radius: 50%;
+    transition: transform .55s cubic-bezier(.6,0,.3,1);
+  }
+  .iris button {
+    font: inherit; font-size: 15px; color: #111; background: #fff; border: 0; padding: 4px 10px;
+    position: absolute; cursor: pointer;
+    text-decoration: underline; text-decoration-color: transparent;
+    text-underline-offset: 4px; text-decoration-thickness: 1px; transition: text-decoration-color .2s;
+  }
+  .iris button:hover { text-decoration-color: #bbb; }
+  .iris button[aria-pressed="true"] { text-decoration-color: currentColor; }
+  .iris [data-tab="software"] { left: 50%; top: 0;   transform: translate(-50%, -50%); }
+  .iris [data-tab="brand"]    { left: 0;   top: 50%; transform: translate(-50%, -50%); }
+  .iris [data-tab="tools"]    { left: 100%; top: 50%; transform: translate(-50%, -50%); }
+  .iris .pupil {
+    left: 50%; top: 50%; transform: translate(-50%, -50%);
+    width: 30%; aspect-ratio: 1; border-radius: 50%;
+    background: #111; color: #fff; padding: 0;
+    transition: background .25s;
+  }
+  .iris .pupil:hover { background: #ff2d95; text-decoration-color: transparent; }
+  .iris .pupil[aria-pressed="true"] { text-decoration-color: transparent; }
+  /* Closed: the eye shrinks away towards the dot at the top. */
+  .iris.closed { opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity .45s ease, visibility 0s linear .45s; }
+  .iris.closed .ring { transform: translateY(calc(-50vh + 30px)) scale(.03); }
+
+  /* The dot the nav becomes. Hovering it turns it hot pink and brings back
+     a ring of small dots in the iris's shape. */
+  .dot {
+    position: fixed; z-index: 3; left: 50%; top: 30px; transform: translate(-50%, -50%);
+    width: 56px; height: 56px; border: 0; padding: 0; background: none; cursor: pointer;
+    opacity: 0; pointer-events: none; transition: opacity .3s ease .25s;
+  }
+  .dot.on { opacity: 1; pointer-events: auto; }
+  .dot::before {
+    content: ""; position: absolute; left: 50%; top: 50%; width: 10px; height: 10px;
+    margin: -5px 0 0 -5px; border-radius: 50%; background: #111; transition: background .2s;
+  }
+  .dot i {
+    position: absolute; left: 50%; top: 50%; width: 3px; height: 3px; margin: -1.5px 0 0 -1.5px;
+    border-radius: 50%; background: #ff2d95; opacity: 0;
+    transform: rotate(var(--a)) translateY(0);
+    transition: opacity .2s ease, transform .3s ease;
+  }
+  .dot:hover::before, .dot:focus-visible::before { background: #ff2d95; }
+  .dot:hover i, .dot:focus-visible i { opacity: 1; transform: rotate(var(--a)) translateY(-17px); }
+  .dot:focus-visible { outline: none; }
+  main { padding-top: 76px !important; }
+  @media (prefers-reduced-motion: reduce) { .iris, .iris .ring, .dot, .dot i { transition: none; } }
+
   h2 { font: inherit; font-size: 15px; margin: 0 0 18px; font-weight: 400; color: #888; }
   .grid + h2 { margin-top: 72px; }
   figcaption a { color: inherit; }
@@ -79,13 +131,18 @@
 </div>
 
 <main hidden id="work">
-  <nav class="tabs" aria-label="Kinds of work">
+  <div id="view"></div>
+</main>
+
+<nav class="iris closed" id="iris" aria-label="Kinds of work">
+  <div class="ring">
     <button type="button" data-tab="software" aria-pressed="false">software</button>
     <button type="button" data-tab="brand" aria-pressed="false">brand</button>
     <button type="button" data-tab="tools" aria-pressed="false">tools</button>
-  </nav>
-  <div id="view"></div>
-</main>
+    <button type="button" class="pupil" data-tab="" aria-pressed="false">all</button>
+  </div>
+</nav>
+<button type="button" class="dot" id="dot" aria-label="Open the nav"></button>
 
 <div class="full" id="full"><img alt=""></div>
 
@@ -176,7 +233,7 @@ function layout() {
   const n = innerWidth > 900 ? 3 : innerWidth > 560 ? 2 : 1;
   if (laidOut === tab + n) return;
   laidOut = tab + n;
-  document.querySelectorAll('.tabs button').forEach(b => b.setAttribute('aria-pressed', b.dataset.tab === tab));
+  document.querySelectorAll('.iris button').forEach(b => b.setAttribute('aria-pressed', b.dataset.tab === (tab || '')));
   const parts = [];
   const heading = text => { const h = document.createElement('h2'); h.textContent = text; return h; };
   if (!tab) parts.push(grid(ITEMS, figureFor, n));                       // no tab: everything
@@ -188,23 +245,38 @@ function layout() {
   view.replaceChildren(...parts);
 }
 
-// A tab shows its work; clicking the open tab again goes back to everything.
+// Picking from the iris shows that work and shrinks the eye to the dot at the top.
 // The open tab is kept in the address (#software, #brand, #tools) so a link can point straight at it.
+const iris = document.getElementById('iris'), dot = document.getElementById('dot');
+// Twelve small dots around the dot, in the iris's shape, for when it is hovered.
+for (let k = 0; k < 12; k++) { const i = document.createElement('i'); i.style.setProperty('--a', k * 30 + 'deg'); dot.appendChild(i); }
+function openIris(open) {
+  iris.classList.toggle('closed', !open);
+  dot.classList.toggle('on', !open);
+  document.body.style.overflow = open ? 'hidden' : '';
+}
 function setTab(t) {
   tab = TABS.includes(t) ? t : null;
   history.replaceState(null, '', tab ? '#' + tab : location.pathname);
   layout();
   scrollTo(0, 0);
+  openIris(false);
 }
-document.querySelectorAll('.tabs button').forEach(b =>
-  b.addEventListener('click', () => setTab(tab === b.dataset.tab ? null : b.dataset.tab)));
+document.querySelectorAll('.iris button').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
+dot.addEventListener('click', () => openIris(true));
+// Clicking the empty page around the eye closes it again, once there is work behind it.
+iris.addEventListener('click', e => { if (e.target === iris && laidOut) openIris(false); });
+addEventListener('keydown', e => { if (e.key === 'Escape' && laidOut && !iris.classList.contains('closed')) openIris(false); });
 
 function show() {
   gate.remove();
   work.hidden = false;
   // Build the grid only after unlocking, so nothing loads before the password.
-  tab = TABS.includes(location.hash.slice(1)) ? location.hash.slice(1) : null;
+  // A link to a tab goes straight to its work; otherwise the eye opens first.
+  const linked = location.hash.slice(1);
+  tab = TABS.includes(linked) ? linked : null;
   layout();
+  openIris(!TABS.includes(linked));
   addEventListener('resize', layout);
 }
 
