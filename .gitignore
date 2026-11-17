@@ -7,6 +7,7 @@
 !media/
 media/*
 !media/gc-signature.jpg
+!media/gc-logo.png
 !media/me-metal.png
 !media/share.png
 !media/shoutout.png
