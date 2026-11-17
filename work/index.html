@@ -242,6 +242,54 @@
   .iris.drawn .pupil:hover .portrait-color, .iris.drawn .pupil:focus-visible .portrait-color { opacity: 1; }
   .iris.drawn .pupil { cursor: pointer; }
   .iris.drawn .pupil image { -webkit-user-select: none; user-select: none; }
+
+  /* Colourway (from the user's reference): pale cool grey with soft light, charcoal ink,
+     light grey for secondary words and lines, and a lime accent. Last, so it wins. */
+  :root { --bg: #dee2e5; --light: #ebebeb; --card: #e9ecee; --ink: #393b3a; --muted: #9aa0a6; --line: #ced2d6; --lime: #a8c76b; --lime-ink: #7d9a45; }
+  html, body { background: var(--bg); color: var(--ink); }
+  body { background: radial-gradient(ellipse at 70% 15%, var(--light), var(--bg) 60%) fixed var(--bg); }
+  .gate { background: var(--bg); }
+  .gate label, .gate input { color: var(--ink); }
+  .gate input { border-bottom-color: var(--ink); }
+  .gate .no { color: var(--muted); }
+  .tile { background: var(--card); }
+  .now { color: var(--ink); }
+  .now .num, .now .kinds, h2 { color: var(--muted); }
+  .other a.name { color: var(--ink); }
+  .other a.name:hover { color: var(--lime-ink); }
+  .full { background: rgba(222,226,229,.97); }
+  .full figcaption { color: var(--muted); }
+  .iris { background: rgba(222,226,229,.82); }
+  .iris.drawn .plate { fill: var(--card); stroke: var(--ink); }
+  .iris.drawn .word, .iris.drawn .caption { fill: var(--ink); }
+  .iris.drawn .mword { fill: var(--muted); }
+  .iris.drawn [data-tab]:hover .word, .iris.drawn [data-tab]:focus-visible .word,
+  .iris.drawn [data-tab][aria-pressed="true"] .word, .iris.drawn [data-tab].lit .word, .iris.drawn [data-tab].kept > .word,
+  .iris.drawn .meet [data-tab]:hover .mword, .iris.drawn .meet [data-tab][aria-pressed="true"] .mword,
+  .iris.drawn .pupil:hover .caption, .iris.drawn .pupil[aria-pressed="true"] .caption { fill: var(--lime-ink); }
+  .iris.drawn [data-tab]:hover .area, .iris.drawn [data-tab]:focus-visible .area { fill: rgba(255,255,255,.35); }
+  .iris.drawn [data-tab][aria-pressed="true"] .area, .iris.drawn [data-tab].lit .area, .iris.drawn [data-tab].kept .area { fill: rgba(168,199,107,.14); }
+  .iris.drawn .pupil ellipse { stroke: var(--ink); }
+  .dot::before { background: radial-gradient(circle at 35% 30%, #5a5c5b, #393b3a 55%, #2c2e2d); }
+  .dot i { background: radial-gradient(circle at 35% 30%, #c9df9a, var(--lime) 55%, #8aa955); }
+  .dot:hover::before, .dot:focus-visible::before { background: radial-gradient(circle at 35% 30%, #c9df9a, var(--lime) 55%, #8aa955); }
+
+  /* Each piece as a card: a thin charcoal frame, a title bar with the project's name,
+     the piece inside with a margin, and its caption underneath, on a faint green. */
+  :root { --card-green: #edf3dd; }
+  .project, .row { gap: 10px; }
+  .project { margin-bottom: 10px; }
+  .tile { background: var(--card-green); border: 1px solid var(--ink); display: flex; flex-direction: column; overflow: visible; aspect-ratio: auto !important; }
+  .tile .bar { font-size: 13px; line-height: 1.2; padding: 7px 10px; border-bottom: 1px solid var(--ink); color: var(--ink); }
+  .tile .pic { position: relative; overflow: hidden; margin: 10px 10px 0; }
+  .tile .pic > a { display: block; width: 100%; height: 100%; }
+  .tile img, .tile video { padding: 0; object-fit: contain; }
+  .tile.fill img, .tile.fill video { object-fit: cover; }
+  .tile figcaption { font-family: "STIX Two Text", Georgia, serif; font-size: 15px; line-height: 1.2; color: var(--ink); padding: 9px 10px 10px; }
+  .tile .pic:last-child { margin-bottom: 10px; }
+  .row.duo .tile:last-child { height: auto; }
+  .row.duo .tile:last-child .pic { aspect-ratio: auto !important; flex: 1; }
+  .other .tile .pic { aspect-ratio: 1; }
 </style>
 </head>
 <body>
@@ -285,6 +333,9 @@ const full = document.getElementById('full');
 // One piece as a tile. Clicking opens it full size with its caption, or opens its own page or tool.
 function figureFor(it) {
   const fig = document.createElement('figure'); fig.className = 'tile';
+  const bar = document.createElement('div'); bar.className = 'bar'; bar.textContent = it.project;
+  const pic = document.createElement('div'); pic.className = 'pic';
+  fig.append(bar, pic);
   let el;
   if (it.kind === 'video') {
     el = document.createElement('video');
@@ -305,20 +356,21 @@ function figureFor(it) {
   if (it.url) {
     const a = document.createElement('a'); a.href = it.url; a.title = it.caption || '';
     if (/^https?:/.test(it.url)) { a.target = '_blank'; a.rel = 'noopener'; }
-    a.appendChild(el); fig.appendChild(a);
-  } else fig.appendChild(el);
+    a.appendChild(el); pic.appendChild(a);
+  } else pic.appendChild(el);
+  if (it.caption) { const cap = document.createElement('figcaption'); cap.textContent = it.caption; fig.appendChild(cap); }
   return fig;
 }
 
 // A tool someone else made: its picture and name, both linking to the tool.
 function figureForOther(t) {
   const box = document.createElement('div'); box.className = 'other';
-  const fig = document.createElement('figure'); fig.className = 'tile'; fig.style.aspectRatio = '1';
+  const fig = document.createElement('figure'); fig.className = 'tile';
+  const bar = document.createElement('div'); bar.className = 'bar'; bar.textContent = t.title;
+  const pic = document.createElement('div'); pic.className = 'pic';
   const a = document.createElement('a'); a.href = t.url; a.target = '_blank'; a.rel = 'noopener';
   const img = document.createElement('img'); img.loading = 'lazy'; img.decoding = 'async'; img.alt = ''; img.src = t.img;
-  a.appendChild(img); fig.appendChild(a); box.appendChild(fig);
-  const name = document.createElement('a'); name.className = 'name'; name.href = t.url; name.target = '_blank'; name.rel = 'noopener'; name.textContent = t.title;
-  box.appendChild(name);
+  a.appendChild(img); pic.appendChild(a); fig.append(bar, pic); box.appendChild(fig);
   return box;
 }
 
@@ -337,7 +389,7 @@ function rows(list) {
     const r = document.createElement('div'); r.className = 'row ' + kind;
     pieces.forEach((it, i) => {
       const t = fig(it, figureFor), rat = ratios[i] || '';
-      t.style.aspectRatio = rat;
+      t.querySelector('.pic').style.aspectRatio = rat;
       // A photo whose shape is within about 12% of its card fills the card; everything else sits whole inside.
       const [a, b] = (rat || '4 / 5').split('/').map(Number), card = b ? a / b : a;
       const near = Math.abs(Math.log((it.w / it.h) / card)) < 0.12;
@@ -456,7 +508,7 @@ function drawIris() {
     <radialGradient id="soft" cx="50%" cy="50%" r="50%"><stop offset=".72" stop-color="#fff"/><stop offset="1" stop-color="#000"/></radialGradient>
     <mask id="vignette" maskContentUnits="userSpaceOnUse"><ellipse cx="${C}" cy="${C}" rx="${PX}" ry="${PY}" fill="url(#soft)"/></mask>
   </defs>
-  <path d="${ringPath} Z" fill="#fff" stroke="#2b2b2b" stroke-width="1.1" pointer-events="none"/>`;
+  <path class="plate" d="${ringPath} Z" fill="#fff" stroke="#2b2b2b" stroke-width="1.1" pointer-events="none"/>`;
   // A word round the portrait, upright and centred on its spot.
   const word = (t, d, r, cls) => { const [x, y] = pt(r, d); return `<text class="${cls}" x="${x}" y="${y + 4}" text-anchor="middle">${t}</text>`; };
   for (const [t, a] of Object.entries(AREAS)) {
