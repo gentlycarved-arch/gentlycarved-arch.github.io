@@ -321,6 +321,12 @@
 
   /* Cards stay neutral: no green on them. */
   .tile { background: #eceef0 !important; }
+
+  /* The iris in green. */
+  .iris.drawn .plate { fill: #e5efcf; stroke: #c4d6a0; }
+  .iris.drawn .hub, .iris.drawn .pupil:hover .hub { fill: #f3f8e8; stroke: #c4d6a0; }
+  .iris.drawn .pupil[aria-pressed="true"] .hub { fill: #cfe3a6; stroke: var(--lime); }
+  .iris.drawn [data-tab][aria-pressed="true"] .area, .iris.drawn [data-tab].lit .area, .iris.drawn [data-tab].kept .area { fill: rgba(130,170,60,.30); }
 </style>
 </head>
 <body>
