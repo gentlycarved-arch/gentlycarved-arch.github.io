@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CoreTable · Tahreem Rehman</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="../../media/me-metal.png">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #fafafa; color: #1d1d1d; }
+  body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 17px; line-height: 1.55; letter-spacing: -0.005em;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+
+  /* Password screen, the same as the work page */
+  .gate { position: fixed; inset: 0; z-index: 9; display: grid; place-items: center; background: #fff; }
+  .gate form { display: grid; gap: 10px; justify-items: center; }
+  .gate label { font-size: 14px; }
+  .gate input {
+    font: inherit; font-size: 15px; text-align: center; width: 220px; padding: 6px 0;
+    border: 0; border-bottom: 1px solid #111; border-radius: 0; background: transparent; color: #111; outline: none;
+  }
+  .gate .no { color: #888; min-height: 1.35em; font-size: 14px; }
+
+  /* One reading column; the videos sit a little wider than the text */
+  article { max-width: 640px; margin: 0 auto; padding: 56px 20px 120px; }
+  .back { display: inline-block; font-size: 14px; color: #999; text-decoration: none; margin-bottom: 64px; }
+  .back:hover { color: #1d1d1d; }
+  h1 { font: inherit; font-weight: 500; margin: 0; }
+  .when { color: #999; margin: 2px 0 36px; }
+  p { margin: 0 0 22px; }
+
+  figure { margin: 44px -120px 48px; }
+  .frame {
+    border-radius: 14px; overflow: hidden; background: #fff;
+    border: 1px solid rgba(0,0,0,.06);
+    box-shadow: 0 1px 2px rgba(0,0,0,.03), 0 24px 70px rgba(0,0,0,.07);
+  }
+  video { display: block; width: 100%; height: auto; aspect-ratio: 1440 / 900; cursor: pointer; }
+  figcaption { max-width: 640px; margin: 14px auto 0; padding: 0 0 0 0; color: #999; font-size: 14px; text-align: center; }
+  .note { color: #999; font-size: 14px; margin-top: 56px; }
+
+  @media (max-width: 900px) { figure { margin-left: 0; margin-right: 0; } }
+</style>
+</head>
+<body>
+<div class="gate" id="gate" hidden>
+  <form id="form" autocomplete="off">
+    <label for="pw">password</label>
+    <input id="pw" type="password" autofocus>
+    <div class="no" id="no" aria-live="polite"></div>
+  </form>
+</div>
+
+<article id="page" hidden>
+  <a class="back" href="../#software">work</a>
+  <h1>CoreTable</h1>
+  <p class="when">GeologicAI, 2026</p>
+  <p>CoreTable is where geologists log drill core. This is a walkthrough of the prototype, from opening a workspace to signing off a log with teammates.</p>
+  <figure><div class="frame"><video muted loop playsinline preload="none" poster="../../media/coretable/01-launcher-and-workspace.jpg" data-src="../../media/coretable/01-launcher-and-workspace.mp4" aria-label="Open Core Photos and the Striplog from the Launcher and lay them side by side. The panes share depth, so hovering one shows the same spot in the other."></video></div></figure>
+  <p>I design every interface at GeologicAI, from the hardware that scans core to CoreTable and AI products for mineral discovery. These recordings come from the working prototype, with demo data.</p>
+  <p>Open Core Photos and the Striplog from the Launcher and lay them side by side. The panes share depth, so hovering one shows the same spot in the other.</p>
+  <p>Logging happens on the Striplog. Select an interval and describe it, draw a new one, let Smart Fill take care of the repetition, and undo anything.</p>
+  <figure><div class="frame"><video muted loop playsinline preload="none" poster="../../media/coretable/02-logging-on-the-striplog.jpg" data-src="../../media/coretable/02-logging-on-the-striplog.mp4" aria-label="Logging happens on the Striplog. Select an interval and describe it, draw a new one, let Smart Fill take care of the repetition, and undo anything."></video></div></figure>
+  <p>Shortcuts for people who log all day: Shift to snap, Alt to resize, double-click to fill a gap, right-click to split.</p>
+  <figure><div class="frame"><video muted loop playsinline preload="none" poster="../../media/coretable/03-logging-shortcuts.jpg" data-src="../../media/coretable/03-logging-shortcuts.mp4" aria-label="Shortcuts for people who log all day: Shift to snap, Alt to resize, double-click to fill a gap, right-click to split."></video></div></figure>
+  <p>Intervals can also be drawn and adjusted straight on the core photos.</p>
+  <figure><div class="frame"><video muted loop playsinline preload="none" poster="../../media/coretable/04-logging-on-core-photos.jpg" data-src="../../media/coretable/04-logging-on-core-photos.mp4" aria-label="Intervals can also be drawn and adjusted straight on the core photos."></video></div></figure>
+  <p>Add and hide tracks, blend overlays over the photos, add a curve and set its range.</p>
+  <figure><div class="frame"><video muted loop playsinline preload="none" poster="../../media/coretable/05-tracks-curves-and-overlays.jpg" data-src="../../media/coretable/05-tracks-curves-and-overlays.mp4" aria-label="Add and hide tracks, blend overlays over the photos, add a curve and set its range."></video></div></figure>
+  <p>Apply the project’s viewer template, change it, save your own, and switch back.</p>
+  <figure><div class="frame"><video muted loop playsinline preload="none" poster="../../media/coretable/06-viewer-templates.jpg" data-src="../../media/coretable/06-viewer-templates.mp4" aria-label="Apply the project’s viewer template, change it, save your own, and switch back."></video></div></figure>
+  <p>View mode is read-only, with hover cards for the details and a switch to turn them off.</p>
+  <figure><div class="frame"><video muted loop playsinline preload="none" poster="../../media/coretable/07-view-mode-and-hover-details.jpg" data-src="../../media/coretable/07-view-mode-and-hover-details.mp4" aria-label="View mode is read-only, with hover cards for the details and a switch to turn them off."></video></div></figure>
+  <p>Depth correction: measure each tube of core, split with Shift, mark rubble with Alt, and check every piece.</p>
+  <figure><div class="frame"><video muted loop playsinline preload="none" poster="../../media/coretable/08-depth-correction-measuring.jpg" data-src="../../media/coretable/08-depth-correction-measuring.mp4" aria-label="Depth correction: measure each tube of core, split with Shift, mark rubble with Alt, and check every piece."></video></div></figure>
+  <p>Place the driller’s depth blocks, with live checks, legend tips and a visibility toggle on every layer.</p>
+  <figure><div class="frame"><video muted loop playsinline preload="none" poster="../../media/coretable/09-depth-blocks-checks-and-legend.jpg" data-src="../../media/coretable/09-depth-blocks-checks-and-legend.mp4" aria-label="Place the driller’s depth blocks, with live checks, legend tips and a visibility toggle on every layer."></video></div></figure>
+  <p>Everything saves as you go. A finished log is signed off, and every version can be looked back on and restored.</p>
+  <figure><div class="frame"><video muted loop playsinline preload="none" poster="../../media/coretable/10-autosave-sign-off-and-history.jpg" data-src="../../media/coretable/10-autosave-sign-off-and-history.mp4" aria-label="Everything saves as you go. A finished log is signed off, and every version can be looked back on and restored."></video></div></figure>
+  <p>See who else is in the log, follow them, accept a teammate’s new depths, and toggle their outlines.</p>
+  <figure><div class="frame"><video muted loop playsinline preload="none" poster="../../media/coretable/11-working-with-teammates.jpg" data-src="../../media/coretable/11-working-with-teammates.mp4" aria-label="See who else is in the log, follow them, accept a teammate’s new depths, and toggle their outlines."></video></div></figure>
+</article>
+
+<script>
+// Not real security, like the work page: it only keeps this out of casual view.
+const PASSWORD = 'affogato';
+const gate = document.getElementById('gate'), page = document.getElementById('page');
+let ok = false;
+try { ok = sessionStorage.getItem('work') === '1'; } catch (e) {}
+
+function show() {
+  gate.remove(); page.hidden = false;
+  // Videos load only once unlocked, play while on screen, and a click pauses or plays them.
+  const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? e.target.play().catch(() => {}) : e.target.pause()), { rootMargin: '100px' });
+  page.querySelectorAll('video').forEach(v => {
+    v.src = v.dataset.src;
+    io.observe(v);
+    v.addEventListener('click', () => v.paused ? v.play() : v.pause());
+  });
+}
+if (ok) show();
+else {
+  gate.hidden = false;
+  document.getElementById('form').addEventListener('submit', e => {
+    e.preventDefault();
+    const pw = document.getElementById('pw');
+    if (pw.value.trim().toLowerCase() === PASSWORD) { try { sessionStorage.setItem('work', '1'); } catch (e) {} show(); }
+    else { document.getElementById('no').textContent = 'not quite'; pw.value = ''; }
+  });
+}
+</script>
+</body>
+</html>

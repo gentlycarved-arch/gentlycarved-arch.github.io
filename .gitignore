@@ -93,3 +93,13 @@ media/posters/*
 !media/viaduct-intention-playbill.png
 !media/viaduct-intention-print.jpg
 !media/viaduct-you-are-what-you-practice.png
+
+# Case studies: each page and its videos
+!work/coretable/
+!work/coretable/index.html
+!work/corescada/
+!work/corescada/index.html
+!media/coretable/
+!media/corescada/
+!media/coretable/*
+!media/corescada/*

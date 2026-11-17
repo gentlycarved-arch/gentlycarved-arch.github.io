@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CoreSCADA · Tahreem Rehman</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="../../media/me-metal.png">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #fafafa; color: #1d1d1d; }
+  body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 17px; line-height: 1.55; letter-spacing: -0.005em;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+
+  /* Password screen, the same as the work page */
+  .gate { position: fixed; inset: 0; z-index: 9; display: grid; place-items: center; background: #fff; }
+  .gate form { display: grid; gap: 10px; justify-items: center; }
+  .gate label { font-size: 14px; }
+  .gate input {
+    font: inherit; font-size: 15px; text-align: center; width: 220px; padding: 6px 0;
+    border: 0; border-bottom: 1px solid #111; border-radius: 0; background: transparent; color: #111; outline: none;
+  }
+  .gate .no { color: #888; min-height: 1.35em; font-size: 14px; }
+
+  /* One reading column; the videos sit a little wider than the text */
+  article { max-width: 640px; margin: 0 auto; padding: 56px 20px 120px; }
+  .back { display: inline-block; font-size: 14px; color: #999; text-decoration: none; margin-bottom: 64px; }
+  .back:hover { color: #1d1d1d; }
+  h1 { font: inherit; font-weight: 500; margin: 0; }
+  .when { color: #999; margin: 2px 0 36px; }
+  p { margin: 0 0 22px; }
+
+  figure { margin: 44px -120px 48px; }
+  .frame {
+    border-radius: 14px; overflow: hidden; background: #fff;
+    border: 1px solid rgba(0,0,0,.06);
+    box-shadow: 0 1px 2px rgba(0,0,0,.03), 0 24px 70px rgba(0,0,0,.07);
+  }
+  video { display: block; width: 100%; height: auto; aspect-ratio: 1440 / 900; cursor: pointer; }
+  figcaption { max-width: 640px; margin: 14px auto 0; padding: 0 0 0 0; color: #999; font-size: 14px; text-align: center; }
+  .note { color: #999; font-size: 14px; margin-top: 56px; }
+
+  @media (max-width: 900px) { figure { margin-left: 0; margin-right: 0; } }
+</style>
+</head>
+<body>
+<div class="gate" id="gate" hidden>
+  <form id="form" autocomplete="off">
+    <label for="pw">password</label>
+    <input id="pw" type="password" autofocus>
+    <div class="no" id="no" aria-live="polite"></div>
+  </form>
+</div>
+
+<article id="page" hidden>
+  <a class="back" href="../#software">work</a>
+  <h1>CoreSCADA</h1>
+  <p class="when">GeologicAI, 2026</p>
+  <p>CoreSCADA is the software that runs GeologicAI’s core scanner: starting scans, checking every image before it is released, and keeping the instruments in order.</p>
+  <figure><div class="frame"><video muted loop playsinline preload="none" poster="../../media/corescada/01-home-and-navigation.jpg" data-src="../../media/corescada/01-home-and-navigation.mp4" aria-label="Home, the sidebar, notifications, light and dark themes, language and the account menu. The sidebar collapses out of the way."></video></div></figure>
+  <p>I design every interface at GeologicAI, from the hardware that scans core to CoreTable and AI products for mineral discovery. This walkthrough was recorded against the scanner simulator.</p>
+  <p>Home, the sidebar, notifications, light and dark themes, language and the account menu. The sidebar collapses out of the way.</p>
+  <p>Starting a scan is a short wizard: project, geo source, plan and box details, then start. Each stroke’s progress shows live, and the scan pauses before the wet photo stroke.</p>
+  <figure><div class="frame"><video muted loop playsinline preload="none" poster="../../media/corescada/02-start-a-scan.jpg" data-src="../../media/corescada/02-start-a-scan.mp4" aria-label="Starting a scan is a short wizard: project, geo source, plan and box details, then start. Each stroke’s progress shows live, and the scan pauses before the wet photo stroke."></video></div></figure>
+  <p>Every image from a scan is marked pass or fail before release. Filter by stroke or instrument, decide cards one at a time or together, go through them one by one in Focus review, then complete QC and let the scan finish.</p>
+  <figure><div class="frame"><video muted loop playsinline preload="none" poster="../../media/corescada/03-qc-review.jpg" data-src="../../media/corescada/03-qc-review.mp4" aria-label="Every image from a scan is marked pass or fail before release. Filter by stroke or instrument, decide cards one at a time or together, go through them one by one in Focus review, then complete QC and let the scan finish."></video></div></figure>
+  <p>The scan log: search, filter by project and date, sort, choose columns and page through.</p>
+  <figure><div class="frame"><video muted loop playsinline preload="none" poster="../../media/corescada/04-scan-log.jpg" data-src="../../media/corescada/04-scan-log.mp4" aria-label="The scan log: search, filter by project and date, sort, choose columns and page through."></video></div></figure>
+  <p>Logs: filter by type, open an entry’s details, search, filter by date, sort and refresh.</p>
+  <figure><div class="frame"><video muted loop playsinline preload="none" poster="../../media/corescada/05-logs.jpg" data-src="../../media/corescada/05-logs.mp4" aria-label="Logs: filter by type, open an entry’s details, search, filter by date, sort and refresh."></video></div></figure>
+  <p>Maintenance: set up the reference scan, see the last result, and work through a safety checklist that unlocks Start Reference Scan.</p>
+  <figure><div class="frame"><video muted loop playsinline preload="none" poster="../../media/corescada/06-maintenance.jpg" data-src="../../media/corescada/06-maintenance.mp4" aria-label="Maintenance: set up the reference scan, see the last result, and work through a safety checklist that unlocks Start Reference Scan."></video></div></figure>
+  <p>Instruments: each one’s connection and live state, with Clear and Abort.</p>
+  <figure><div class="frame"><video muted loop playsinline preload="none" poster="../../media/corescada/07-instruments.jpg" data-src="../../media/corescada/07-instruments.mp4" aria-label="Instruments: each one’s connection and live state, with Clear and Abort."></video></div></figure>
+  <p class="note">Projects, scans, instruments and images are demo data.</p>
+</article>
+
+<script>
+// Not real security, like the work page: it only keeps this out of casual view.
+const PASSWORD = 'affogato';
+const gate = document.getElementById('gate'), page = document.getElementById('page');
+let ok = false;
+try { ok = sessionStorage.getItem('work') === '1'; } catch (e) {}
+
+function show() {
+  gate.remove(); page.hidden = false;
+  // Videos load only once unlocked, play while on screen, and a click pauses or plays them.
+  const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? e.target.play().catch(() => {}) : e.target.pause()), { rootMargin: '100px' });
+  page.querySelectorAll('video').forEach(v => {
+    v.src = v.dataset.src;
+    io.observe(v);
+    v.addEventListener('click', () => v.paused ? v.play() : v.pause());
+  });
+}
+if (ok) show();
+else {
+  gate.hidden = false;
+  document.getElementById('form').addEventListener('submit', e => {
+    e.preventDefault();
+    const pw = document.getElementById('pw');
+    if (pw.value.trim().toLowerCase() === PASSWORD) { try { sessionStorage.setItem('work', '1'); } catch (e) {} show(); }
+    else { document.getElementById('no').textContent = 'not quite'; pw.value = ''; }
+  });
+}
+</script>
+</body>
+</html>
