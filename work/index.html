@@ -8,7 +8,7 @@
 <link rel="icon" href="../media/me-metal.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:wght@400;600&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; }
   html, body { margin: 0; background: #fff; color: #111; }
@@ -290,6 +290,34 @@
   .row.duo .tile:last-child { height: auto; }
   .row.duo .tile:last-child .pic { aspect-ratio: auto !important; flex: 1; }
   .other .tile .pic { aspect-ratio: 1; }
+
+  /* Simple iris: faint blue disc, charcoal dots on its edge, a stronger green for what's picked. */
+  :root { --lime: #9cc25a; --lime-ink: #6f9133; --card-green: #e3eecb; }
+  .iris.drawn .plate { fill: #e6ecf3; stroke: #c3ccd6; stroke-width: 1; }
+  .iris.drawn .bigdot, .iris.drawn .smalldot { fill: var(--ink); transition: fill .2s; }
+  .iris.drawn [data-tab]:hover .bigdot, .iris.drawn [data-tab][aria-pressed="true"] .bigdot, .iris.drawn [data-tab].lit .bigdot, .iris.drawn [data-tab].kept .bigdot,
+  .iris.drawn .meet [data-tab]:hover .smalldot, .iris.drawn .meet [data-tab][aria-pressed="true"] .smalldot { fill: var(--lime); }
+  .iris.drawn [data-tab]:hover .area, .iris.drawn [data-tab]:focus-visible .area { fill: rgba(255,255,255,.45); }
+  .iris.drawn [data-tab][aria-pressed="true"] .area, .iris.drawn [data-tab].lit .area, .iris.drawn [data-tab].kept .area { fill: rgba(156,194,90,.28); }
+  .iris.drawn .hub { fill: #f3f6f9; stroke: #c3ccd6; stroke-width: 1; filter: none; transition: fill .2s; }
+  .iris.drawn .pupil:hover .hub, .iris.drawn .pupil[aria-pressed="true"] .hub { fill: #d7e8b6; stroke: var(--lime); }
+  .iris.drawn .caption { font-size: 13px; }
+
+  /* Hover: only the word goes bold and its dot grows a little. */
+  .iris.drawn .bigdot, .iris.drawn .smalldot { transform-box: fill-box; transform-origin: center; transition: transform .2s ease, fill .2s; }
+  .iris.drawn [data-tab]:hover .area, .iris.drawn [data-tab]:focus-visible .area { fill: transparent; }
+  .iris.drawn [data-tab]:not([aria-pressed="true"]):not(.kept):hover .word, .iris.drawn .meet [data-tab]:not([aria-pressed="true"]):hover .mword { fill: inherit; }
+  .iris.drawn [data-tab]:hover .word, .iris.drawn [data-tab]:focus-visible .word { fill: var(--ink); font-weight: 600; }
+  .iris.drawn .meet [data-tab]:hover .mword, .iris.drawn .meet [data-tab]:focus-visible .mword { fill: var(--muted); font-weight: 600; }
+  .iris.drawn [data-tab]:hover .bigdot, .iris.drawn [data-tab]:focus-visible .bigdot,
+  .iris.drawn .meet [data-tab]:hover .smalldot, .iris.drawn .meet [data-tab]:focus-visible .smalldot { fill: var(--ink); transform: scale(1.3); }
+  .iris.drawn [data-tab][aria-pressed="true"] .word, .iris.drawn .meet [data-tab][aria-pressed="true"] .mword { fill: var(--lime-ink); }
+  .iris.drawn [data-tab][aria-pressed="true"] .bigdot, .iris.drawn .meet [data-tab][aria-pressed="true"] .smalldot { fill: var(--lime); }
+  .iris.drawn .pupil:hover .hub { fill: #f3f6f9; stroke: #c3ccd6; }
+  .iris.drawn .pupil:hover .caption { fill: var(--ink); font-weight: 600; }
+
+  /* The in-between words and their small dots always show. */
+  .iris.drawn .meet { opacity: 1 !important; }
 </style>
 </head>
 <body>
@@ -488,47 +516,36 @@ function drawIris() {
     'easter eggs': ['software', 'fun', 'jokes and surprises hidden inside software'],
     systems:       ['brand', 'tools', 'tools that make a brand: palettes, type, marks'],
   };
-  // Drawn like an old printed tee: a portrait in a soft oval in the middle (the "all" button),
-  // the words set round it like little emblems, and a thin, slightly uneven ring holding them.
-  const PX = 66, PY = 86, IN = 96;                // the portrait's oval, and where the words' areas begin
+  // Simple: a faint blue disc with dots on its edge (large for the four kinds, small for the
+  // in-between words), each word beside its dot, and a small "all" circle in the middle.
+  const IN = 30;
   const sector = ([a0, a1]) => {
     const [x1, y1] = pt(IN, a0), [x2, y2] = pt(R, a0), [x3, y3] = pt(R, a1), [x4, y4] = pt(IN, a1);
     return `<path class="area" d="M ${x1},${y1} L ${x2},${y2} A${R},${R} 0 0,1 ${x3},${y3} L ${x4},${y4} A${IN},${IN} 0 0,0 ${x1},${y1} Z"/>`;
   };
-  // The ring: a closed line that wavers a little, as if drawn by hand.
-  let ringPath = '';
-  for (let k = 0; k <= 240; k++) {
-    const t = k / 240 * Math.PI * 2;
-    const r = R - 4 + 1.6 * Math.sin(2 * t + .6) + .7 * Math.sin(3 * t + 1.9);
-    ringPath += (k ? ' L ' : 'M ') + (C + r * Math.cos(t) * 1.02).toFixed(2) + ',' + (C + r * Math.sin(t) * .97).toFixed(2);
-  }
-  const S = 2340 / 1300 * PY * 2;                  // the grain photo, sized so the child fills the oval
-  let m = `<defs>
-    <clipPath id="oval"><ellipse cx="${C}" cy="${C}" rx="${PX}" ry="${PY}"/></clipPath>
-    <radialGradient id="soft" cx="50%" cy="50%" r="50%"><stop offset=".72" stop-color="#fff"/><stop offset="1" stop-color="#000"/></radialGradient>
-    <mask id="vignette" maskContentUnits="userSpaceOnUse"><ellipse cx="${C}" cy="${C}" rx="${PX}" ry="${PY}" fill="url(#soft)"/></mask>
-  </defs>
-  <path class="plate" d="${ringPath} Z" fill="#fff" stroke="#2b2b2b" stroke-width="1.1" pointer-events="none"/>`;
-  // A word round the portrait, upright and centred on its spot.
-  const word = (t, d, r, cls) => { const [x, y] = pt(r, d); return `<text class="${cls}" x="${x}" y="${y + 4}" text-anchor="middle">${t}</text>`; };
+  // A word just outside the rim, upright, anchored away from the circle.
+  const edge = (t, d, gap, size, cls) => {
+    const [x, y] = pt(R + gap, d), c = Math.cos(rad(d)), sn = Math.sin(rad(d));
+    const anchor = c > .3 ? 'start' : c < -.3 ? 'end' : 'middle';
+    const dy = sn < -.3 ? -2 : sn > .3 ? size * .8 : size * .32;
+    return `<text class="${cls}" x="${x}" y="${y + dy}" text-anchor="${anchor}">${t}</text>`;
+  };
+  const dot = (d, r, cls) => { const [x, y] = pt(R, d); return `<circle class="${cls}" cx="${x}" cy="${y}" r="${r}"/>`; };
+  let m = `<circle class="plate" cx="${C}" cy="${C}" r="${R}"/>`;
   for (const [t, a] of Object.entries(AREAS)) {
-    m += `<g data-tab="${t}" role="button" tabindex="0" aria-label="${t}">${sector(a)}${word(t, (a[0] + a[1]) / 2, 136, 'word')}</g>`;
+    const d = (a[0] + a[1]) / 2;
+    m += `<g data-tab="${t}" role="button" tabindex="0" aria-label="${t}">${sector(a)}${dot(d, 7, 'bigdot')}${edge(t, d, 14, 17, 'word')}</g>`;
   }
   m += `<g class="meet">`;
   for (const [t, d] of Object.entries({ ...EDGE, ...RINGS })) {
-    const [gx, gy] = pt(140, d);
+    const [gx, gy] = pt(R + 26, d);
     m += `<g data-tab="${t}" role="button" tabindex="0" aria-label="${t}">
-      <circle class="grab" cx="${gx}" cy="${gy}" r="20"/>${word(t, d, 140, 'mword')}</g>`;
+      <circle class="grab" cx="${gx}" cy="${gy}" r="24"/>${dot(d, t in RINGS ? 3 : 4, 'smalldot')}${edge(t, d, 11, 12.5, 'mword')}</g>`;
   }
   m += `</g>
     <g class="pupil" data-tab="" role="button" tabindex="0" aria-label="all">
-      <g clip-path="url(#oval)" mask="url(#vignette)">
-        <image href="../media/me-grain.png" x="${C - S / 2}" y="${C - S / 2}" width="${S}" height="${S}" preserveAspectRatio="xMidYMid slice"/>
-        <image class="portrait-color" href="../media/me-grain-color.png" x="${C - S / 2}" y="${C - S / 2}" width="${S}" height="${S}" preserveAspectRatio="xMidYMid slice"/>
-      </g>
-      <ellipse cx="${C}" cy="${C}" rx="${PX}" ry="${PY}" fill="none" stroke="#2b2b2b" stroke-width=".9"/>
-      <text class="caption" x="${C}" y="${C + PY + 19}" text-anchor="middle">all</text></g>
-    <image href="../media/gc-logo.png" x="${C + 96}" y="${C + 150}" width="74" height="30" opacity=".85" pointer-events="none"/>`;
+      <circle class="hub" cx="${C}" cy="${C}" r="${IN - 4}"/>
+      <text class="caption" x="${C}" y="${C + 4.5}" text-anchor="middle">all</text></g>`;
   const svg = document.createElementNS(NS, 'svg');
   svg.setAttribute('viewBox', '0 0 400 400');
   svg.innerHTML = m;
