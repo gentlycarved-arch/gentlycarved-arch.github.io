@@ -228,6 +228,20 @@
     .project::before { content: attr(data-name); display: block; padding: 18px 0 4px; font-size: 12px; color: #111; }
     .project:first-child::before { padding-top: 0; }
   }
+  /* The tee-print iris (last, so it wins over the earlier glass styles). */
+  /* Flat, like a print on a tee: no glass. */
+  .iris.drawn .ring::before, .iris.drawn .ring::after { display: none; }
+  .iris.drawn .ring { filter: none; }
+  .iris.drawn .word { font-size: 16px; fill: #3a3a3a; }
+  .iris.drawn .mword { font-size: 12px; fill: #8a8a8a; }
+  .iris.drawn .caption { font-family: "STIX Two Text", Georgia, serif; font-size: 11px; fill: #3a3a3a; }
+  .iris.drawn .area { fill: transparent; }
+  .iris.drawn [data-tab]:hover .area, .iris.drawn [data-tab]:focus-visible .area { fill: rgba(0,0,0,.025); }
+  .iris.drawn [data-tab][aria-pressed="true"] .area, .iris.drawn [data-tab].lit .area, .iris.drawn [data-tab].kept .area { fill: rgba(0,0,0,.045); }
+  .iris.drawn .portrait-color { opacity: 0; transition: opacity .7s ease; }
+  .iris.drawn .pupil:hover .portrait-color, .iris.drawn .pupil:focus-visible .portrait-color { opacity: 1; }
+  .iris.drawn .pupil { cursor: pointer; }
+  .iris.drawn .pupil image { -webkit-user-select: none; user-select: none; }
 </style>
 </head>
 <body>
@@ -412,7 +426,7 @@ function drawIris() {
   // Pairs side by side meet on the line between them; pairs across from each other meet on a ring round the middle.
   const EDGE = { websites: -45, merch: 45, toys: 135, products: 225 };
   // Pairs across from each other sit just above and below the middle.
-  const RINGS = { 'easter eggs': -67.5, systems: 22.5 };
+  const RINGS = { 'easter eggs': -62, systems: 28 };
   // How each pair meets: the two kinds it joins, and a line on what happens where they cross.
   const HOW = {
     websites:      ['software', 'brand', 'a brand you can click through'],
@@ -422,50 +436,47 @@ function drawIris() {
     'easter eggs': ['software', 'fun', 'jokes and surprises hidden inside software'],
     systems:       ['brand', 'tools', 'tools that make a brand: palettes, type, marks'],
   };
+  // Drawn like an old printed tee: a portrait in a soft oval in the middle (the "all" button),
+  // the words set round it like little emblems, and a thin, slightly uneven ring holding them.
+  const PX = 66, PY = 86, IN = 96;                // the portrait's oval, and where the words' areas begin
   const sector = ([a0, a1]) => {
-    const [x1, y1] = pt(HUB, a0), [x2, y2] = pt(R, a0), [x3, y3] = pt(R, a1), [x4, y4] = pt(HUB, a1);
-    return `<path class="area" d="M ${x1},${y1} L ${x2},${y2} A${R},${R} 0 0,1 ${x3},${y3} L ${x4},${y4} A${HUB},${HUB} 0 0,0 ${x1},${y1} Z"/>`;
+    const [x1, y1] = pt(IN, a0), [x2, y2] = pt(R, a0), [x3, y3] = pt(R, a1), [x4, y4] = pt(IN, a1);
+    return `<path class="area" d="M ${x1},${y1} L ${x2},${y2} A${R},${R} 0 0,1 ${x3},${y3} L ${x4},${y4} A${IN},${IN} 0 0,0 ${x1},${y1} Z"/>`;
   };
-  const arc = (r, a0, a1) => { const [x1, y1] = pt(r, a0), [x2, y2] = pt(r, a1); return `M ${x1},${y1} A${r},${r} 0 ${a1 - a0 > 180 ? 1 : 0},1 ${x2},${y2}`; };
+  // The ring: a closed line that wavers a little, as if drawn by hand.
+  let ringPath = '';
+  for (let k = 0; k <= 240; k++) {
+    const t = k / 240 * Math.PI * 2;
+    const r = R - 4 + 1.6 * Math.sin(2 * t + .6) + .7 * Math.sin(3 * t + 1.9);
+    ringPath += (k ? ' L ' : 'M ') + (C + r * Math.cos(t) * 1.02).toFixed(2) + ',' + (C + r * Math.sin(t) * .97).toFixed(2);
+  }
+  const S = 2340 / 1300 * PY * 2;                  // the grain photo, sized so the child fills the oval
   let m = `<defs>
-    <radialGradient id="bead" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#9a9aa2"/><stop offset=".45" stop-color="#3a3a40"/><stop offset="1" stop-color="#111"/></radialGradient>
-    <radialGradient id="hubGlass" cx="40%" cy="30%" r="80%"><stop offset="0" stop-color="#fff"/><stop offset=".6" stop-color="#f1f1f4"/><stop offset="1" stop-color="#dcdce2"/></radialGradient>
-    <radialGradient id="hubDark" cx="40%" cy="30%" r="80%"><stop offset="0" stop-color="#9c9ca6"/><stop offset=".6" stop-color="#6e6e78"/><stop offset="1" stop-color="#55555e"/></radialGradient>
-  </defs>`;
-  // A word just outside the rim at an angle, upright, anchored away from the circle.
-  const edge = (t, d, gap, size, cls) => {
-    const [x, y] = pt(R + gap, d), c = Math.cos(rad(d)), sn = Math.sin(rad(d));
-    const anchor = c > .3 ? 'start' : c < -.3 ? 'end' : 'middle';
-    const dy = sn < -.3 ? -2 : sn > .3 ? size * .75 : size * .3;
-    return `<text class="${cls}" x="${x}" y="${y + dy}" text-anchor="${anchor}">${t}</text>`;
-  };
+    <clipPath id="oval"><ellipse cx="${C}" cy="${C}" rx="${PX}" ry="${PY}"/></clipPath>
+    <radialGradient id="soft" cx="50%" cy="50%" r="50%"><stop offset=".72" stop-color="#fff"/><stop offset="1" stop-color="#000"/></radialGradient>
+    <mask id="vignette" maskContentUnits="userSpaceOnUse"><ellipse cx="${C}" cy="${C}" rx="${PX}" ry="${PY}" fill="url(#soft)"/></mask>
+  </defs>
+  <path d="${ringPath} Z" fill="#fff" stroke="#2b2b2b" stroke-width="1.1" pointer-events="none"/>`;
+  // A word round the portrait, upright and centred on its spot.
+  const word = (t, d, r, cls) => { const [x, y] = pt(r, d); return `<text class="${cls}" x="${x}" y="${y + 4}" text-anchor="middle">${t}</text>`; };
   for (const [t, a] of Object.entries(AREAS)) {
-    m += `<g data-tab="${t}" role="button" tabindex="0" aria-label="${t}">${sector(a)}${edge(t, (a[0] + a[1]) / 2, 12, 17, 'word')}</g>`;
+    m += `<g data-tab="${t}" role="button" tabindex="0" aria-label="${t}">${sector(a)}${word(t, (a[0] + a[1]) / 2, 136, 'word')}</g>`;
   }
-  // Dots on the edge: big ones at the four kinds, small ones at the points between them.
-  for (let d = 0; d < 360; d += 45) {
-    const main = d % 90 === 0, [x, y] = pt(R, d);
-    m += `<circle cx="${x}" cy="${y}" r="${main ? 4.5 : 2.6}" fill="url(#bead)" pointer-events="none"/>`;
-  }
-  for (const d of [-45, 45, 135, 225]) {
-    const [x1, y1] = pt(HUB, d), [x2, y2] = pt(R, d);
-    m += `<line class="hairline" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="rgba(0,0,0,.16)" stroke-width=".8" pointer-events="none"/>`;
-  }
-  m += `<circle cx="${C}" cy="${C}" r="${R - .5}" fill="none" stroke="rgba(255,255,255,.9)" stroke-width="1" pointer-events="none"/>`;
-  // The meeting words: dashed lines, each with its word where the two kinds cross.
   m += `<g class="meet">`;
-  // Meeting words on the edge too: beside the small dots where neighbours meet, and the two
-  // pairs from across the middle on tiny dots of their own.
   for (const [t, d] of Object.entries({ ...EDGE, ...RINGS })) {
-    const [x, y] = pt(R, d), [gx, gy] = pt(R + 30, d);
+    const [gx, gy] = pt(140, d);
     m += `<g data-tab="${t}" role="button" tabindex="0" aria-label="${t}">
-      ${t in RINGS ? `<circle cx="${x}" cy="${y}" r="1.8" fill="url(#bead)"/>` : ''}
-      <circle class="grab" cx="${gx}" cy="${gy}" r="26"/>${edge(t, d, 9, 12.5, 'mword')}</g>`;
+      <circle class="grab" cx="${gx}" cy="${gy}" r="20"/>${word(t, d, 140, 'mword')}</g>`;
   }
   m += `</g>
     <g class="pupil" data-tab="" role="button" tabindex="0" aria-label="all">
-      <circle class="hub" cx="${C}" cy="${C}" r="${HUB}"/>
-      <text class="word" x="${C}" y="${C + 4.5}" text-anchor="middle">all</text></g>`;
+      <g clip-path="url(#oval)" mask="url(#vignette)">
+        <image href="../media/me-grain.png" x="${C - S / 2}" y="${C - S / 2}" width="${S}" height="${S}" preserveAspectRatio="xMidYMid slice"/>
+        <image class="portrait-color" href="../media/me-grain-color.png" x="${C - S / 2}" y="${C - S / 2}" width="${S}" height="${S}" preserveAspectRatio="xMidYMid slice"/>
+      </g>
+      <ellipse cx="${C}" cy="${C}" rx="${PX}" ry="${PY}" fill="none" stroke="#2b2b2b" stroke-width=".9"/>
+      <text class="caption" x="${C}" y="${C + PY + 19}" text-anchor="middle">all</text></g>
+    <image href="../media/gc-logo.png" x="${C + 96}" y="${C + 150}" width="74" height="30" opacity=".85" pointer-events="none"/>`;
   const svg = document.createElementNS(NS, 'svg');
   svg.setAttribute('viewBox', '0 0 400 400');
   svg.innerHTML = m;
