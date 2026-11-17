@@ -393,6 +393,25 @@
   .stage .side .col .other { width: 76%; }
   .stage .side .col .other .tile { width: 100% !important; }
   @media (max-width: 900px) { .stage .side .col { gap: 48px; } }
+
+  /* How a pair meets: straight, centred right above the circle, wrapping within the middle column. */
+  .iris.inline .why {
+    position: absolute; left: 50%; top: auto; bottom: calc(100% + 34px); transform: translateX(-50%);
+    width: 330px; margin: 0; text-align: center; pointer-events: none;
+    font-family: "STIX Two Text", Georgia, serif; font-size: 13.5px; line-height: 1.25; color: #4d6024;
+    opacity: 0; transition: opacity .25s;
+  }
+  .iris.inline .why.on { opacity: 1; }
+
+  /* The iris never moves: fixed in the centre of the screen while the work scrolls on either side. */
+  .stage:not(.stacked) .iris.inline { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 400px; height: 400px; }
+  .stage:not(.stacked) .mid { min-height: 1px; }
+
+  /* On narrower windows the iris is a little smaller, still fixed in the middle with work either side. */
+  .stage.compact { grid-template-columns: minmax(0, 1fr) 290px minmax(0, 1fr); }
+  .stage.compact:not(.stacked) .iris.inline { width: 290px; height: 290px; }
+  .stage.compact .iris.inline .ring { --d: 170px !important; }
+  .stage.compact .iris.inline .why { width: 250px; font-size: 12.5px; }
 </style>
 </head>
 <body>
@@ -558,15 +577,15 @@ const TABS = ['software', 'brand', 'tools', 'fun', 'websites', 'merch', 'toys', 
 let tab = null, laidOut = '';
 function layout() {
   // The iris sits open in the middle; the work flows in columns on both sides of it.
-  const w = innerWidth, perSide = w > 1250 ? 2 : w > 900 ? 1 : 0, narrow = w > 560 ? 2 : 1;
-  const key = tab + ':' + perSide + ':' + narrow;
+  const w = innerWidth, perSide = w > 1250 ? 2 : w > 620 ? 1 : 0, narrow = w > 560 ? 2 : 1, compact = perSide && w <= 900;
+  const key = tab + ':' + perSide + ':' + narrow + ':' + compact;
   if (laidOut === key) return;
   laidOut = key;
   document.querySelectorAll('.iris [data-tab]').forEach(b => b.setAttribute('aria-pressed', b.dataset.tab === (tab || '')));
   if (typeof markTab === 'function') markTab(tab);
   const list = tab === 'tools' ? [...ITEMS.filter(it => it.tags.includes('tools')), ...OTHERS]
              : tab ? ITEMS.filter(it => it.tags.includes(tab)) : ITEMS;
-  const stage = document.createElement('div'); stage.className = 'stage' + (perSide ? '' : ' stacked');
+  const stage = document.createElement('div'); stage.className = 'stage' + (perSide ? '' : ' stacked') + (compact ? ' compact' : '');
   const mid = document.createElement('div'); mid.className = 'mid'; mid.appendChild(iris);
   const col = () => { const c = document.createElement('div'); c.className = 'col'; return c; };
   let cols;
@@ -683,15 +702,11 @@ function drawIris() {
     g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setTab(g.dataset.tab); } });
   });
   // Hovering a meeting word lights up the two kinds it joins and says how they meet.
-  // The line that says how a pair meets runs along the top of the iris, curving with it.
-  const WR = R + 66, [wx0, wy0] = pt(WR, -170), [wx1, wy1] = pt(WR, -10);
-  const arcDef = document.createElementNS(NS, 'path');
-  arcDef.setAttribute('id', 'whyArc'); arcDef.setAttribute('fill', 'none');
-  arcDef.setAttribute('d', `M ${wx0},${wy0} A ${WR},${WR} 0 0,1 ${wx1},${wy1}`);
-  const why = document.createElementNS(NS, 'text'); why.setAttribute('class', 'why'); why.setAttribute('text-anchor', 'middle'); why.style.textAnchor = 'middle';
-  const whyPath = document.createElementNS(NS, 'textPath');
-  whyPath.setAttribute('href', '#whyArc'); whyPath.setAttribute('startOffset', (WR * rad(160) / 2).toFixed(1)); whyPath.setAttribute('text-anchor', 'middle');
-  why.appendChild(whyPath); svg.append(arcDef, why);
+  // The line that says how a pair meets sits straight, centred just above the circle and its top word,
+  // wrapping onto a second line rather than running into the work.
+  const why = document.createElement('p'); why.className = 'why';
+  const whyPath = why;
+  ring.appendChild(why);
   svg.querySelectorAll('.meet [data-tab]').forEach(g => {
     const [a, b, line] = HOW[g.dataset.tab];
     const on = v => {
