@@ -115,6 +115,15 @@
   .iris.drawn .dash { fill: none; stroke: #111; stroke-opacity: .45; stroke-width: .8; stroke-dasharray: 2.5 3; transition: stroke .2s, stroke-opacity .2s; }
   .iris.drawn .grab { fill: none; stroke: transparent; stroke-width: 12; }
   .iris.drawn .mword { font-size: 10.5px; fill: #111; }
+  .iris.drawn [data-tab].lit .area { fill: rgba(255,45,149,.10); }
+  .iris.drawn [data-tab].lit .word { fill: #ff2d95; }
+  .iris.drawn .ring { position: relative; }
+  .iris.drawn .why {
+    position: absolute; left: 50%; top: calc(100% + 22px); transform: translateX(-50%);
+    width: max-content; max-width: 88vw; margin: 0; text-align: center;
+    font-size: 15px; color: #111; opacity: 0; transition: opacity .25s;
+  }
+  .iris.drawn .why.on { opacity: 1; }
   /* The hairlines open up around the meeting words only while those words are showing. */
   .iris.drawn.meeting .hairline, .iris.drawn svg:has(.pupil:hover) .hairline, .iris.drawn svg:has(.meet:hover) .hairline { mask: url(#gaps); }
   .iris.drawn .meet [data-tab]:hover .mword, .iris.drawn .meet [data-tab]:focus-visible .mword,
@@ -293,12 +302,21 @@ function drawIris() {
   // Pairs side by side meet on the line between them; pairs across from each other meet on a ring round the middle.
   const EDGE = { websites: -45, merch: 45, toys: 135, products: 225 };
   const RINGS = { 'easter eggs': [72, [-90, 90]], systems: [48, [180, 0]] };
+  // How each pair meets: the two kinds it joins, and a line on what happens where they cross.
+  const HOW = {
+    websites:      ['software', 'brand', 'a brand you can click through'],
+    merch:         ['brand', 'fun', 'a brand you can wear, wash with and seal a letter with'],
+    toys:          ['fun', 'tools', 'tools made to be played with'],
+    products:      ['tools', 'software', 'tools people open every day to do their work'],
+    'easter eggs': ['software', 'fun', 'jokes and surprises hidden inside software'],
+    systems:       ['brand', 'tools', 'tools that make a brand: palettes, type, marks'],
+  };
   const sector = ([a0, a1]) => {
     const [x1, y1] = pt(HUB, a0), [x2, y2] = pt(R, a0), [x3, y3] = pt(R, a1), [x4, y4] = pt(HUB, a1);
     return `<path class="area" d="M ${x1},${y1} L ${x2},${y2} A${R},${R} 0 0,1 ${x3},${y3} L ${x4},${y4} A${HUB},${HUB} 0 0,0 ${x1},${y1} Z"/>`;
   };
   const arc = (r, a0, a1) => { const [x1, y1] = pt(r, a0), [x2, y2] = pt(r, a1); return `M ${x1},${y1} A${r},${r} 0 ${a1 - a0 > 180 ? 1 : 0},1 ${x2},${y2}`; };
-  let m = `<circle cx="${C}" cy="${C}" r="${R}" fill="#fbe4e3"/>`;
+  let m = `<circle cx="${C}" cy="${C}" r="${R}" fill="#fdf2f1"/>`;
   for (const [t, a] of Object.entries(AREAS)) {
     const [x, y] = pt(134, (a[0] + a[1]) / 2);
     m += `<g data-tab="${t}" role="button" tabindex="0" aria-label="${t}">${sector(a)}
@@ -352,6 +370,20 @@ function drawIris() {
   svg.querySelectorAll('[data-tab]').forEach(g => {
     g.addEventListener('click', e => { e.stopPropagation(); setTab(g.dataset.tab); });
     g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setTab(g.dataset.tab); } });
+  });
+  // Hovering a meeting word lights up the two kinds it joins and says how they meet.
+  const why = document.createElement('p'); why.className = 'why'; ring.appendChild(why);
+  svg.querySelectorAll('.meet [data-tab]').forEach(g => {
+    const [a, b, line] = HOW[g.dataset.tab];
+    const on = v => {
+      svg.querySelectorAll(`[data-tab="${a}"], [data-tab="${b}"]`).forEach(q => q.classList.toggle('lit', v));
+      why.textContent = v ? `${a} + ${b}: ${line}` : '';
+      why.classList.toggle('on', v);
+    };
+    g.addEventListener('pointerenter', () => on(true));
+    g.addEventListener('pointerleave', () => on(false));
+    g.addEventListener('focus', () => on(true));
+    g.addEventListener('blur', () => on(false));
   });
   // The meeting words show while "all" is the open choice, or while you hover the middle.
   markTab = t => iris.classList.toggle('meeting', !t || !['software', 'brand', 'tools', 'fun'].includes(t));
