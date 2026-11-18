@@ -127,3 +127,7 @@ media/posters/*
 !credits.json
 !licenses/
 !licenses/*
+!work/negative-space/
+!work/negative-space/index.html
+!media/negative-space/
+!media/negative-space/*
