@@ -258,6 +258,10 @@
     body.menu-open header nav > *:nth-child(13) { transition-delay: 0.505s; }
     body.menu-open header nav > *:nth-child(14) { transition-delay: 0.540s; }
   }
+
+  /* Every button's words sit in its middle. */
+  button, nav .opt { text-align: center; }
+  @media (max-width: 760px) { header nav button, header nav .opt { text-align: center !important; } }
 </style>
 </head>
 <body>
