@@ -305,6 +305,11 @@
   .about-card { transition: opacity .5s ease .22s, transform .7s cubic-bezier(.22,1,.36,1) .22s; transform: translateY(18px); }
   .about.closing .about-card { transition: opacity .2s ease, transform .3s ease; transform: translateY(10px); }
   @media (prefers-reduced-motion: reduce) { .about, .about-photo, .about-card { transition: opacity .2s ease !important; } }
+
+  /* Footer: the gentlycarved signature, ink only, as wide as the page allows. */
+  .sigfoot { padding: 120px 24px 28px; }
+  .sigfoot img { display: block; width: 100%; height: auto; -webkit-user-drag: none; user-select: none; }
+  @media (max-width: 760px) { .sigfoot { padding: 80px 16px 20px; } }
 </style>
 </head>
 <body>
@@ -327,6 +332,7 @@
   <h1 id="title">Work</h1>
   <p class="how" id="how"></p>
   <main><div class="cols" id="cols"></div></main>
+  <footer class="sigfoot"><img src="../media/gc-logo-wide.png" alt="gentlycarved"></footer>
 </div>
 
 <div class="about" id="about" role="dialog" aria-modal="true" aria-label="About me" hidden>
