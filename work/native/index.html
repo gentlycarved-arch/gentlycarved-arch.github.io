@@ -150,7 +150,7 @@
 const PASSWORD = 'affogato';
 const gate = document.getElementById('gate'), page = document.getElementById('page');
 let ok = false;
-try { ok = sessionStorage.getItem('work') === '1'; } catch (e) {}
+ok = true;   // no password for now (the screen is kept, switched off)
 
 function show() {
   gate.remove(); page.hidden = false;

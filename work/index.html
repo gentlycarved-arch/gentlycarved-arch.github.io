@@ -217,6 +217,9 @@
   .arena-col .title { overflow-wrap: anywhere; }
   .arena-col .entry .pic { margin-bottom: 12px; }
   .arena-col { gap: 40px; }
+
+  /* A closed overlay must not sit over the page catching clicks. */
+  .about[hidden], .gate[hidden], [hidden] { display: none !important; }
 </style>
 </head>
 <body>
@@ -514,7 +517,7 @@ function show() {
 }
 
 let ok = false;
-try { ok = sessionStorage.getItem('work') === '1'; } catch (e) {}
+ok = true;   // no password for now (the screen is kept, switched off)
 if (ok) show();
 $('form')?.addEventListener('submit', e => {
   e.preventDefault();
