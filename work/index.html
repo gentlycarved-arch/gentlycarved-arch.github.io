@@ -203,6 +203,14 @@
   .about-body .src { font: 14px/20px "Helvetica Neue", Helvetica, Arial, sans-serif; color: var(--muted); }
   .about-body a { text-decoration: underline; text-underline-offset: 3px; }
   @media (prefers-reduced-motion: reduce) { .about, .about-photo, .about-card { transition: none; } }
+
+  /* Research: one are.na channel per column, its name on top and its saves running down. */
+  .arena-col { display: flex; flex-direction: column; gap: 56px; min-width: 0; }
+  .arena-head { display: flex; flex-direction: column; gap: 2px; font: 400 11.5px/19px "IBM Plex Mono", ui-monospace, Menlo, monospace; text-transform: uppercase; letter-spacing: .04em; }
+  .arena-head .name { color: var(--ink); }
+  .arena-head .count { color: var(--muted); }
+  .arena-head:hover .name { text-decoration: underline; text-underline-offset: 3px; }
+  .how a { text-decoration: underline; text-underline-offset: 4px; }
 </style>
 </head>
 <body>
@@ -271,7 +279,7 @@ const BETWEEN = {
 // In the nav each in-between word sits between the two kinds it joins, going round:
 // software · websites · brand · merch · fun · toys · tools · products (which joins tools back to software).
 // Systems joins brand and tools, which can't also sit side by side in one line, so it comes last.
-const TABS = ['all', 'software', 'websites', 'brand', 'merch', 'fun', 'toys', 'tools', 'notes'];
+const TABS = ['all', 'software', 'websites', 'brand', 'merch', 'fun', 'toys', 'tools', 'research', 'notes'];
 let tab = 'all';
 let toolsBy = null;   // under Tools: null (both), 'me' or 'others'
 
@@ -380,6 +388,50 @@ function estimate(it) {
   return 60 + (it.caption ? Math.ceil(it.caption.length / 40) * 23 + 22 : 0) + w * it.h / it.w + 40;
 }
 
+// Research: three of my are.na channels, one per column, read live from are.na.
+// Each entry is a channel's slug (the end of its are.na address).
+const RESEARCH = ['color-palette-qtw3s8lypli', 'interface-design-ypohlhax4ns', 'beautiful-evidence-jtqzlzaggm4'];
+const ARENA = 'https://api.are.na/v3';
+const arenaCache = new Map();
+async function channel(slug) {
+  if (!arenaCache.has(slug)) arenaCache.set(slug, Promise.all([
+    fetch(`${ARENA}/channels/${slug}`).then(r => r.json()),
+    fetch(`${ARENA}/channels/${slug}/contents?per=24`).then(r => r.json()),
+  ]).then(([info, contents]) => ({ info, blocks: contents.data || [] })));
+  return arenaCache.get(slug);
+}
+function blockEntry(b) {
+  const e = document.createElement('article'); e.className = 'entry';
+  const src = b.image && (b.image.large || b.image.medium || b.image.small || {}).src;
+  const href = (b.source && b.source.url) || `https://www.are.na/block/${b.id}`;
+  if (src) e.appendChild(picture(src, 'image', '', b.title || '', href));
+  else if (b.type === 'Text') {
+    const panel = document.createElement('a'); panel.className = 'pic notepanel'; panel.href = href; panel.target = '_blank'; panel.rel = 'noopener';
+    const p = document.createElement('p'); p.textContent = (b.content && (b.content.plain || b.content.markdown)) || ''; panel.appendChild(p); e.appendChild(panel);
+  }
+  const t = document.createElement('a'); t.className = 'title'; t.href = href; t.target = '_blank'; t.rel = 'noopener';
+  t.textContent = b.title || (b.source && b.source.title) || b.type;
+  e.appendChild(t);
+  return e;
+}
+function researchView() {
+  const cols = $('cols');
+  cols.style.gridTemplateColumns = `repeat(${innerWidth > 1100 ? 3 : innerWidth > 640 ? 2 : 1}, minmax(0, 1fr))`;
+  cols.replaceChildren(...RESEARCH.map(slug => {
+    const col = document.createElement('section'); col.className = 'arena-col';
+    const head = document.createElement('a'); head.className = 'arena-head'; head.href = `https://www.are.na/gentlycarved/${slug}`; head.target = '_blank'; head.rel = 'noopener';
+    head.textContent = '…'; col.appendChild(head);
+    channel(slug).then(({ info, blocks }) => {
+      head.innerHTML = '';
+      const name = document.createElement('span'); name.className = 'name'; name.textContent = (info.title || slug).trim();
+      const meta = document.createElement('span'); meta.className = 'count'; meta.textContent = `${(info.counts && info.counts.blocks) || blocks.length} blocks · on are.na`;
+      head.append(name, meta);
+      blocks.forEach(b => col.appendChild(blockEntry(b)));
+    }).catch(() => { head.textContent = 'are.na didn’t answer just now'; });
+    return col;
+  }));
+}
+
 let laid = '';
 function layout() {
   // An even grid: three across, every entry the same width, in reading order.
@@ -387,6 +439,7 @@ function layout() {
   const key = tab + n + (tab === 'tools' ? toolsBy : '');
   if (key === laid) return;
   laid = key;
+  if (tab === 'research') return researchView();
   const cols = $('cols');
   cols.style.gridTemplateColumns = `repeat(${n}, minmax(0, 1fr))`;
   cols.replaceChildren(...listFor(tab).map(entryFor));
@@ -396,7 +449,7 @@ function layout() {
 function drawNav() {
   const nav = $('nav');
   TABS.forEach((t, i) => {
-    if (t === 'software' || t === 'notes') { const g = document.createElement('span'); g.className = 'gap'; nav.appendChild(g); }
+    if (t === 'software' || t === 'research') { const g = document.createElement('span'); g.className = 'gap'; nav.appendChild(g); }
     const b = document.createElement('button'); b.type = 'button'; b.dataset.tab = t; b.textContent = t;
     if (BETWEEN[t]) { b.classList.add('between'); b.title = `${BETWEEN[t][0]} + ${BETWEEN[t][1]}: ${BETWEEN[t][2]}`; }
     b.addEventListener('click', () => setTab(t));
@@ -416,6 +469,7 @@ function showHow() {
     });
     return;
   }
+  if (tab === 'research') { how.innerHTML = 'from my <a href="https://www.are.na/gentlycarved" target="_blank" rel="noopener">are.na</a>'; return; }
   how.textContent = BETWEEN[tab] ? `${BETWEEN[tab][0]} + ${BETWEEN[tab][1]}: ${BETWEEN[tab][2]}` : '';
 }
 
