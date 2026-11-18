@@ -220,6 +220,16 @@
 
   /* A closed overlay must not sit over the page catching clicks. */
   .about[hidden], .gate[hidden], [hidden] { display: none !important; }
+
+  /* Hover: simple and tactile. The colour comes in and the picture grows a touch. (Wisp removed.) */
+  .entry .pic { --wf: 0% !important; -webkit-mask-image: none !important; mask-image: none !important; overflow: hidden; }
+  .halo { display: none !important; }
+  .me::after { display: none !important; }
+  .entry .pic img, .entry .pic video { transition: filter 1.2s ease, transform .5s cubic-bezier(.2,.8,.2,1); transform-origin: center; }
+  .entry .pic:hover img, .entry .pic:hover video { filter: grayscale(0); transform: scale(1.04); }
+  .me { transition: filter 1.2s ease, transform .5s cubic-bezier(.2,.8,.2,1); }
+  .me:hover { transform: scale(1.06); }
+  @media (prefers-reduced-motion: reduce) { .entry .pic:hover img, .entry .pic:hover video, .me:hover { transform: none; } }
 </style>
 </head>
 <body>
@@ -313,7 +323,6 @@ function picture(src, kind, poster, caption, href) {
     });
   }
   wrap.appendChild(el);
-  wisp(wrap, el);
   return wrap;
 }
 
