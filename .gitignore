@@ -130,3 +130,8 @@ media/posters/*
 # Lossless WebP copies of the PNGs (pixel-identical, lighter)
 !media/webp/
 !media/webp/*
+!media/gta-iv-book.webp
+!work/gta-iv-book/
+!work/gta-iv-book/index.html
+!media/gta-iv-book/
+!media/gta-iv-book/*

@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GTA IV Book · Tahreem Rehman</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="../../media/me-metal.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #fafafa; color: #1d1d1d; }
+  body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 17px; line-height: 1.55; letter-spacing: -0.005em;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+
+  /* Password screen, the same as the work page */
+  .gate { position: fixed; inset: 0; z-index: 9; display: grid; place-items: center; background: #fff; }
+  .gate form { display: grid; gap: 10px; justify-items: center; }
+  .gate label { font-size: 14px; }
+  .gate input {
+    font: inherit; font-size: 15px; text-align: center; width: 220px; padding: 6px 0;
+    border: 0; border-bottom: 1px solid #111; border-radius: 0; background: transparent; color: #111; outline: none;
+  }
+  .gate .no { color: #888; min-height: 1.35em; font-size: 14px; }
+
+  /* One reading column; the videos sit a little wider than the text */
+  article { max-width: 640px; margin: 0 auto; padding: 56px 20px 120px; }
+  .back { display: inline-block; font-size: 14px; color: #999; text-decoration: none; margin-bottom: 64px; }
+  .back:hover { color: #1d1d1d; }
+  h1 { font: inherit; font-weight: 500; margin: 0; }
+  .when { color: #999; margin: 2px 0 36px; }
+  p { margin: 0 0 22px; }
+  ul { margin: 0 0 22px; padding-left: 1.1em; }
+  li { margin-bottom: 6px; }
+
+  figure { margin: 44px -120px 48px; }
+  figure.square, figure.tall { margin-top: 44px; margin-bottom: 48px; }
+  .frame {
+    border-radius: 14px; overflow: hidden; background: #fff;
+    border: 1px solid rgba(0,0,0,.06);
+    box-shadow: 0 1px 2px rgba(0,0,0,.03), 0 24px 70px rgba(0,0,0,.07);
+  }
+  video { display: block; width: 100%; height: auto; cursor: pointer; }
+  figure.square { margin-left: auto; margin-right: auto; max-width: 560px; }
+  figure.tall { margin-left: auto; margin-right: auto; max-width: 480px; }
+  .bare video { background: transparent; }
+  figcaption { max-width: 640px; margin: 14px auto 0; padding: 0 0 0 0; color: #999; font-size: 14px; text-align: center; }
+  .note { color: #999; font-size: 14px; margin-top: 56px; }
+
+  @media (max-width: 900px) { figure.wide { margin-left: 0; margin-right: 0; } }
+
+  /* Colourway: pale cool grey with soft light, charcoal ink, light grey secondary text. */
+  html, body { background: #dee2e5; color: #393b3a; }
+  body { background: radial-gradient(ellipse at 70% 15%, #ebebeb, #dee2e5 60%) fixed #dee2e5; }
+  .when, .note, figcaption, .back { color: #9aa0a6; }
+  .back:hover { color: #7d9a45; }
+  .frame { background: #e9ecee; border-color: rgba(57,59,58,.08); }
+  .gate { background: #dee2e5; }
+  .gate input { border-bottom-color: #393b3a; color: #393b3a; }
+
+  /* Type and colour to match the work page: STIX Two Text for reading, small grey sans for labels,
+     black on light grey, and pictures in black and white until hovered. */
+  :root { --ink: #000; --muted: rgba(0,0,0,.55); --bg: #f5f5f5; --serif: "STIX Two Text", "Times New Roman", serif; }
+  html, body { background: var(--bg); color: var(--ink); }
+  body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 15px; line-height: 20px; letter-spacing: .02em; }
+  article { max-width: 640px; padding-top: 40px; }
+  .back { font-size: 14px; color: var(--muted); margin-bottom: 90px; }
+  .back:hover { color: var(--ink); }
+  h1 { font: 400 72px/1 var(--serif); letter-spacing: .01em; margin: 0 0 14px; }
+  .when { color: var(--muted); font-size: 14px; margin: 0 0 48px; }
+  p, li { font: 17.5px/25px var(--serif); letter-spacing: .01em; }
+  p { margin: 0 0 22px; }
+  figcaption, .note { font: 14px/20px "Helvetica Neue", Helvetica, Arial, sans-serif; color: var(--muted); }
+  .frame { background: #fff; border-color: rgba(0,0,0,.08); }
+  video { filter: grayscale(1); transition: filter 1.8s ease; }
+  figure:hover video { filter: grayscale(0); }
+  .gate { background: var(--bg); }
+  .gate input { border-bottom-color: var(--ink); color: var(--ink); }
+  @media (max-width: 760px) { h1 { font-size: 52px; } .back { margin-bottom: 60px; } }
+
+  /* The same visual language as the work page: round photo and capsule nav on top,
+     a big centred serif title, flat pictures in black and white until hovered. */
+  header { position: sticky; top: 0; z-index: 5; display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 22px 16px 16px; background: var(--bg); }
+  .me { display: block; width: 64px; height: 64px; border-radius: 50%;
+    background: url("../../media/me-computer.jpg") 47% 32% / auto 175% no-repeat;
+    filter: grayscale(1); transition: filter 1.8s ease; box-shadow: 0 0 0 1px rgba(0,0,0,.1); }
+  .me:hover { filter: grayscale(0); }
+  nav { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 2px; padding: 5px;
+    background: #fff; border: 1px solid rgba(0,0,0,.1); border-radius: 999px; box-shadow: 0 1px 2px rgba(0,0,0,.04); max-width: calc(100vw - 32px); }
+  nav .opt { font-size: 14px; line-height: 20px; padding: 5px 12px 4px; border-radius: 999px; color: var(--ink); text-decoration: none; transition: background-color .2s; }
+  nav .opt.between { color: var(--muted); }
+  nav .opt:hover { background: rgba(0,0,0,.06); }
+  nav .gap { width: 1px; height: 16px; margin: 0 6px; background: rgba(0,0,0,.15); }
+  article { padding-top: 0; }
+  h1 { text-align: center; font-size: 84px; margin: 90px 0 16px; }
+  .when { text-align: center; margin-bottom: 80px; }
+  .frame { border: 0; border-radius: 0; box-shadow: none; background: transparent; }
+  figure { margin-top: 48px; margin-bottom: 56px; }
+  figcaption { text-align: left; max-width: none; margin-top: 12px; }
+  @media (max-width: 760px) { nav { border-radius: 22px; } h1 { font-size: 56px; margin-top: 60px; } .when { margin-bottom: 50px; } }
+
+  p.when, p.note { font: 14px/20px "Helvetica Neue", Helvetica, Arial, sans-serif; letter-spacing: .02em; color: var(--muted); }
+
+  /* Larger pictures and videos: they break out of the text column, centred on the page. */
+  figure.wide, figure.square, figure.tall { position: relative; left: 50%; transform: translateX(-50%); margin-left: 0 !important; margin-right: 0 !important; max-width: none !important; }
+  figure.wide { width: min(1200px, calc(100vw - 48px)); }
+  figure.square { width: min(760px, calc(100vw - 48px)); }
+  figure.tall { width: min(620px, calc(100vw - 48px)); }
+  figure { margin-top: 56px; margin-bottom: 64px; }
+  @media (max-width: 760px) { figure.wide, figure.square, figure.tall { width: calc(100vw - 32px); } }
+
+  /* Phones: the nav stays one line you can swipe sideways, so the pinned header stays small. */
+  @media (max-width: 760px) {
+    header { gap: 10px; padding: 12px 12px 10px; }
+    .me { width: 48px; height: 48px; }
+    nav { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; max-width: calc(100vw - 24px); border-radius: 999px !important;
+      scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+    nav::-webkit-scrollbar { display: none; }
+    nav .opt, nav .gap { flex: none; }
+  }
+</style>
+</head>
+<body>
+<div class="gate" id="gate" hidden>
+  <form id="form" autocomplete="off">
+    <label for="pw">password</label>
+    <input id="pw" type="password" autofocus>
+    <div class="no" id="no" aria-live="polite"></div>
+  </form>
+</div>
+
+<div id="page" hidden>
+<header>
+  <a class="me" href="/" aria-label="Tahreem as a child at the computer; home"></a>
+  <nav aria-label="Kinds of work"><a class="opt" href="../">all</a><span class="gap"></span><a class="opt" href="../#software">software</a><a class="opt between" href="../#websites">websites</a><a class="opt" href="../#brand">brand</a><a class="opt between" href="../#merch">merch</a><a class="opt" href="../#fun">fun</a><a class="opt between" href="../#toys">toys</a><a class="opt" href="../#tools">tools</a><span class="gap"></span><a class="opt" href="../#photos">photos</a><a class="opt" href="../#research">research</a><a class="opt" href="../#notes">notes</a></nav>
+</header>
+<article>
+  <h1>GTA IV Book</h1>
+  <p class="when">book design</p>
+  <p>A book of Grand Theft Auto IV: its script, interviews and cast, laid out page by page.</p>
+  <figure class="tall"><div class="frame"><img src="../../media/gta-iv-book/cast-pages-montage-7x8-2800x3200.webp" alt="the cast pages" style="display:block;width:100%;height:auto;filter:grayscale(1);transition:filter 1.8s ease"></div></figure>
+  <figure class="wide"><div class="frame"><img src="../../media/gta-iv-book/montage-book-overview.webp" alt="the whole book" style="display:block;width:100%;height:auto;filter:grayscale(1);transition:filter 1.8s ease"></div></figure>
+  <figure class="wide"><div class="frame"><img src="../../media/gta-iv-book/montage-book.webp" alt="spreads" style="display:block;width:100%;height:auto;filter:grayscale(1);transition:filter 1.8s ease"></div></figure>
+  <figure class="wide"><div class="frame"><img src="../../media/gta-iv-book/montage-script-spreads.webp" alt="script spreads" style="display:block;width:100%;height:auto;filter:grayscale(1);transition:filter 1.8s ease"></div></figure>
+  <figure class="wide"><div class="frame"><img src="../../media/gta-iv-book/montage-interview.webp" alt="interview pages" style="display:block;width:100%;height:auto;filter:grayscale(1);transition:filter 1.8s ease"></div></figure>
+  <figure class="wide"><div class="frame"><img src="../../media/gta-iv-book/montage-quote-pages.webp" alt="quote pages" style="display:block;width:100%;height:auto;filter:grayscale(1);transition:filter 1.8s ease"></div></figure>
+  <figure class="wide"><div class="frame"><img src="../../media/gta-iv-book/montage-scene-colours.webp" alt="scene colours" style="display:block;width:100%;height:auto;filter:grayscale(1);transition:filter 1.8s ease"></div></figure>
+  <figure class="tall"><div class="frame"><img src="../../media/gta-iv-book/character-key-7x8-1120x1280.webp" alt="the character key" style="display:block;width:100%;height:auto;filter:grayscale(1);transition:filter 1.8s ease"></div></figure>
+</article>
+</div>
+
+<script>
+// Not real security, like the work page: it only keeps this out of casual view.
+const PASSWORD = 'affogato';
+const gate = document.getElementById('gate'), page = document.getElementById('page');
+let ok = false;
+try { ok = sessionStorage.getItem('work') === '1'; } catch (e) {}
+
+function show() {
+  gate.remove(); page.hidden = false;
+  // Videos load only once unlocked, play while on screen, and a click pauses or plays them.
+  const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? e.target.play().catch(() => {}) : e.target.pause()), { rootMargin: '100px' });
+  page.querySelectorAll('video').forEach(v => {
+    v.src = v.dataset.src;
+    io.observe(v);
+    v.addEventListener('click', () => v.paused ? v.play() : v.pause());
+  });
+}
+if (ok) show();
+else {
+  gate.hidden = false;
+  document.getElementById('form').addEventListener('submit', e => {
+    e.preventDefault();
+    const pw = document.getElementById('pw');
+    if (pw.value.trim().toLowerCase() === PASSWORD) { try { sessionStorage.setItem('work', '1'); } catch (e) {} show(); }
+    else { document.getElementById('no').textContent = 'not quite'; pw.value = ''; }
+  });
+}
+</script>
+</body>
+</html>
