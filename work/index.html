@@ -8,7 +8,7 @@
 <link rel="icon" href="../media/me-metal.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=STIX+Two+Text:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Pinyon+Script&family=STIX+Two+Text:wght@400;600&display=swap" rel="stylesheet">
 <style>
   /* After sourcetype.com/index: black and white, a pill-and-row nav, a big serif title,
      and three columns of entries (title, words, picture). Pictures are black and white
@@ -262,6 +262,19 @@
   /* Every button's words sit in its middle. */
   button, nav .opt { text-align: center; }
   @media (max-width: 760px) { header nav button, header nav .opt { text-align: center !important; } }
+
+  /* All buttons the same colour and weight; the selected one is in a script hand instead of a pill. */
+  nav button, nav .opt, nav button.between, nav .opt.between, .about-tabs button, .how button {
+    color: var(--ink) !important; font-weight: 400 !important; background: none !important;
+  }
+  nav button[aria-pressed="true"], .about-tabs button[aria-selected="true"], .how button[aria-pressed="true"] {
+    font-family: "Pinyon Script", "Snell Roundhand", cursive !important; font-size: 21px !important; line-height: 20px !important;
+    background: none !important; color: var(--ink) !important; text-decoration: none !important; letter-spacing: 0 !important;
+  }
+  @media (max-width: 760px) {
+    header nav button[aria-pressed="true"] { font-size: 25px !important; line-height: 22px !important; }
+    .navbtn { font-family: "Pinyon Script", "Snell Roundhand", cursive; font-size: 21px; letter-spacing: 0; }
+  }
 </style>
 </head>
 <body>
@@ -634,6 +647,8 @@ addEventListener('keydown', e => { if (e.key === 'Escape') full.classList.remove
   document.querySelectorAll('header nav button, header nav a').forEach(o => o.addEventListener('click', close));
   addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
   window.__navLabel = t => { btn.textContent = t; };
+  // The page may already be on an option (a link to #brand, say): label the button with it now.
+  const on = document.querySelector('nav [aria-pressed="true"]'); if (on) btn.textContent = on.dataset.tab || on.textContent;
 })();
 </script>
 </body>

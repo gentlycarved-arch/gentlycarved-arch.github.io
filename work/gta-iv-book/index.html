@@ -8,7 +8,7 @@
 <link rel="icon" href="../../media/me-metal.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=STIX+Two+Text:wght@400;600&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; }
   html, body { margin: 0; background: #fafafa; color: #1d1d1d; }
@@ -172,6 +172,19 @@
   /* Every button's words sit in its middle. */
   button, nav .opt { text-align: center; }
   @media (max-width: 760px) { header nav button, header nav .opt { text-align: center !important; } }
+
+  /* All buttons the same colour and weight; the selected one is in a script hand instead of a pill. */
+  nav button, nav .opt, nav button.between, nav .opt.between, .about-tabs button, .how button {
+    color: #000 !important; font-weight: 400 !important; background: none !important;
+  }
+  nav button[aria-pressed="true"], .about-tabs button[aria-selected="true"], .how button[aria-pressed="true"] {
+    font-family: "Pinyon Script", "Snell Roundhand", cursive !important; font-size: 21px !important; line-height: 20px !important;
+    background: none !important; color: #000 !important; text-decoration: none !important; letter-spacing: 0 !important;
+  }
+  @media (max-width: 760px) {
+    header nav button[aria-pressed="true"] { font-size: 25px !important; line-height: 22px !important; }
+    .navbtn { font-family: "Pinyon Script", "Snell Roundhand", cursive; font-size: 21px; letter-spacing: 0; }
+  }
 </style>
 </head>
 <body>
