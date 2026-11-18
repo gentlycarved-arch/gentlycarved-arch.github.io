@@ -106,6 +106,14 @@
   @media (max-width: 760px) { nav { border-radius: 22px; } h1 { font-size: 56px; margin-top: 60px; } .when { margin-bottom: 50px; } }
 
   p.when, p.note { font: 14px/20px "Helvetica Neue", Helvetica, Arial, sans-serif; letter-spacing: .02em; color: var(--muted); }
+
+  /* Larger pictures and videos: they break out of the text column, centred on the page. */
+  figure.wide, figure.square, figure.tall { position: relative; left: 50%; transform: translateX(-50%); margin-left: 0 !important; margin-right: 0 !important; max-width: none !important; }
+  figure.wide { width: min(1200px, calc(100vw - 48px)); }
+  figure.square { width: min(760px, calc(100vw - 48px)); }
+  figure.tall { width: min(620px, calc(100vw - 48px)); }
+  figure { margin-top: 56px; margin-bottom: 64px; }
+  @media (max-width: 760px) { figure.wide, figure.square, figure.tall { width: calc(100vw - 32px); } }
 </style>
 </head>
 <body>
