@@ -104,6 +104,14 @@
   nav button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
   nav button.between[aria-pressed="true"] { color: var(--bg); }
   nav .gap { width: 1px; height: 16px; margin: 0 6px; background: rgba(0,0,0,.15); opacity: 1; }
+
+  /* More room, like sourcetype's index: larger pictures, wider gaps between columns and entries. */
+  main { padding: 0 80px 160px; }
+  .cols { gap: 56px; }
+  .col { gap: 170px; }
+  .entry .pic { margin-top: 4px; margin-bottom: 20px; }
+  @media (max-width: 1100px) { main { padding: 0 40px 120px; } .cols { gap: 40px; } .col { gap: 120px; } }
+  @media (max-width: 760px) { .col { gap: 80px; } }
 </style>
 </head>
 <body>
@@ -198,7 +206,7 @@ function entryFor(it) {
     }
     if (it.caption) { const p = document.createElement('p'); p.textContent = it.caption; e.appendChild(p); }
     // Wide pictures sit wider than tall ones, as on the index.
-    w = it.w / it.h > 1.15 ? 312 : it.w / it.h < .9 ? 234 : 270;
+    w = it.w / it.h > 1.15 ? 390 : it.w / it.h < .9 ? 270 : 330;
     const pic = picture(it.src, it.kind, it.poster, it.caption, it.url);
     pic.style.width = w + 'px'; pic.style.maxWidth = '100%';
     e.appendChild(pic);
@@ -224,7 +232,7 @@ function listFor(t) {
 function estimate(it) {
   if (it.text !== undefined) return 60 + Math.ceil(it.text.length / 38) * 25;
   if (!('kind' in it)) return 60 + 312;
-  const w = it.w / it.h > 1.15 ? 312 : it.w / it.h < .9 ? 234 : 270;
+  const w = it.w / it.h > 1.15 ? 390 : it.w / it.h < .9 ? 270 : 330;
   return 60 + (it.caption ? Math.ceil(it.caption.length / 40) * 23 + 22 : 0) + w * it.h / it.w + 40;
 }
 
@@ -240,7 +248,7 @@ function layout() {
   for (const it of listFor(tab)) {
     const k = h.indexOf(Math.min(...h));
     cs[k].appendChild(entryFor(it));
-    h[k] += estimate(it) + 110;
+    h[k] += estimate(it) + 170;
   }
   cols.replaceChildren(...cs);
 }
