@@ -214,6 +214,50 @@
     nav::-webkit-scrollbar { display: none; }
     nav button, nav .gap { flex: none; }
   }
+
+  /* Phones: the nav is one button at the top middle saying where you are. Tapping it slowly opens
+     a vertical list of every option, and the rest of the site fades back behind it. */
+  .navbtn, .navshade { display: none; }
+  @media (max-width: 760px) {
+    header { position: sticky; top: 0; z-index: 7; }
+    .navbtn { display: inline-flex; align-items: center; justify-content: center; min-width: 96px; height: 34px; padding: 0 18px;
+      border: 0; border-radius: 999px; background: var(--ink); color: var(--bg); font: 14px/1 "Helvetica Neue", Helvetica, Arial, sans-serif;
+      letter-spacing: .02em; cursor: pointer; position: relative; z-index: 8; }
+    .navshade { display: block; position: fixed; inset: 0; z-index: 6; background: rgba(245,245,245,.88);
+      -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); opacity: 0; pointer-events: none; transition: opacity .5s ease; }
+    body.menu-open .navshade { opacity: 1; pointer-events: auto; }
+    body.menu-open { overflow: hidden; }
+    header nav {
+      position: absolute; left: 50%; top: calc(100% - 6px); transform: translateX(-50%); z-index: 8;
+      display: flex !important; flex-direction: column; align-items: stretch; flex-wrap: nowrap !important; gap: 0 !important;
+      width: min(260px, calc(100vw - 32px)); max-width: none !important; overflow: hidden !important;
+      padding: 0 !important; border-radius: 18px !important; background: #fff; border: 1px solid rgba(0,0,0,.08);
+      box-shadow: 0 18px 50px rgba(0,0,0,.10);
+      max-height: 0; opacity: 0; pointer-events: none;
+      transition: max-height .7s cubic-bezier(.2,.8,.2,1), opacity .4s ease, padding .5s ease;
+    }
+    body.menu-open header nav { max-height: 80vh; opacity: 1; pointer-events: auto; padding: 8px !important; overflow-y: auto !important; }
+    header nav button, header nav .opt { display: block; width: 100%; text-align: left; font-size: 17px !important; line-height: 22px !important;
+      padding: 11px 16px 10px !important; border-radius: 12px !important; flex: none; }
+    header nav .gap { width: auto !important; height: 1px !important; margin: 6px 14px !important; background: rgba(0,0,0,.08) !important; flex: none; }
+    /* Each option fades in a little after the one before it. */
+    header nav > * { opacity: 0; transform: translateY(-4px); transition: opacity .35s ease, transform .45s ease; }
+    body.menu-open header nav > * { opacity: 1; transform: none; }
+    body.menu-open header nav > *:nth-child(1) { transition-delay: 0.085s; }
+    body.menu-open header nav > *:nth-child(2) { transition-delay: 0.120s; }
+    body.menu-open header nav > *:nth-child(3) { transition-delay: 0.155s; }
+    body.menu-open header nav > *:nth-child(4) { transition-delay: 0.190s; }
+    body.menu-open header nav > *:nth-child(5) { transition-delay: 0.225s; }
+    body.menu-open header nav > *:nth-child(6) { transition-delay: 0.260s; }
+    body.menu-open header nav > *:nth-child(7) { transition-delay: 0.295s; }
+    body.menu-open header nav > *:nth-child(8) { transition-delay: 0.330s; }
+    body.menu-open header nav > *:nth-child(9) { transition-delay: 0.365s; }
+    body.menu-open header nav > *:nth-child(10) { transition-delay: 0.400s; }
+    body.menu-open header nav > *:nth-child(11) { transition-delay: 0.435s; }
+    body.menu-open header nav > *:nth-child(12) { transition-delay: 0.470s; }
+    body.menu-open header nav > *:nth-child(13) { transition-delay: 0.505s; }
+    body.menu-open header nav > *:nth-child(14) { transition-delay: 0.540s; }
+  }
 </style>
 </head>
 <body>
@@ -228,9 +272,11 @@
 <div id="page" hidden>
   <header>
     <button type="button" class="me" id="me" aria-label="About me" aria-haspopup="dialog"></button>
+    <button type="button" class="navbtn" aria-expanded="false" aria-controls="nav">all</button>
     <nav id="nav" aria-label="Kinds of work"></nav>
     <span></span>
   </header>
+  <div class="navshade" aria-hidden="true"></div>
   <h1 id="title">Work</h1>
   <p class="how" id="how"></p>
   <main><div class="cols" id="cols"></div></main>
@@ -434,21 +480,21 @@ function researchView() {
 // straight above or below. Keeps the order as close to the original as it can.
 const projectOf = it => it.project || (it.text !== undefined ? 'note:' + it.url : 'other:' + (it.url || it.title));
 function spread(list, n, seed = 0) {
-  // Each step places the project with the most pieces still waiting (that isn't beside or above),
-  // so a big project is spaced out from the start instead of piling up at the end. Ties are broken
-  // by a fixed seed, so the order is the same on every visit.
+  // Keep the original order, only moving a piece when it would land beside (or straight above/below)
+  // a piece from the same project. A project that's over half of what's left goes first, so it can't
+  // pile up at the end. Retries use a fixed seed, so the order is the same on every visit.
   let r = seed * 9301 + 49297; const rand = () => (r = (r * 9301 + 49297) % 233280) / 233280;
   const left = list.slice(), out = [];
   const count = p => left.reduce((c, it) => c + (projectOf(it) === p), 0);
   while (left.length) {
     const i = out.length, beside = i % n ? projectOf(out[i - 1]) : null, above = i >= n ? projectOf(out[i - n]) : null;
-    const pick = ok => {
-      let best = -1, bestScore = -1;
-      left.forEach((it, k) => { const p = projectOf(it); if (!ok(p)) return; const sc = count(p) + (seed ? rand() * .9 : 0); if (sc > bestScore) { best = k; bestScore = sc; } });
-      return best;
-    };
-    let k = pick(p => p !== beside && p !== above);
-    if (k < 0) k = pick(p => p !== beside);
+    const okBoth = it => projectOf(it) !== beside && projectOf(it) !== above;
+    let k = left.findIndex(it => okBoth(it) && count(projectOf(it)) * 2 > left.length);   // a dominant project first
+    if (k < 0) {
+      const ok = left.map((it, x) => okBoth(it) ? x : -1).filter(x => x >= 0);
+      k = ok.length ? ok[seed ? Math.min(ok.length - 1, Math.floor(rand() * 3)) : 0] : -1;
+    }
+    if (k < 0) k = left.findIndex(it => projectOf(it) !== beside);
     if (k < 0) k = 0;
     out.push(left.splice(k, 1)[0]);
   }
@@ -509,6 +555,7 @@ function setTab(t) {
   if (t !== tab) toolsBy = null;   // coming back to Tools shows both makers again
   tab = TABS.includes(t) ? t : 'all';
   document.querySelectorAll('nav button').forEach(b => b.setAttribute('aria-pressed', b.dataset.tab === tab));
+  if (window.__navLabel) window.__navLabel(tab);
   // On a phone the nav is a strip you swipe: slide it so the option you're on is in view.
   const navEl = $('nav'), on = navEl.querySelector('[aria-pressed="true"]');
   if (on && navEl.scrollWidth > navEl.clientWidth) navEl.scrollTo({ left: on.offsetLeft - (navEl.clientWidth - on.offsetWidth) / 2, behavior: 'smooth' });
@@ -571,6 +618,19 @@ about.querySelectorAll('[data-about]').forEach(b => b.addEventListener('click', 
 }));
 addEventListener('keydown', e => { if (e.key === 'Escape') closeAbout(); });
 addEventListener('keydown', e => { if (e.key === 'Escape') full.classList.remove('open'); });
+
+// Phones: the nav button opens and closes the vertical menu; picking an option or tapping outside closes it.
+(() => {
+  const btn = document.querySelector('.navbtn'), shade = document.querySelector('.navshade');
+  if (!btn) return;
+  const close = () => { document.body.classList.remove('menu-open'); btn.setAttribute('aria-expanded', 'false'); };
+  btn.addEventListener('click', () => { const open = !document.body.classList.contains('menu-open');
+    document.body.classList.toggle('menu-open', open); btn.setAttribute('aria-expanded', open); });
+  shade.addEventListener('click', close);
+  document.querySelectorAll('header nav button, header nav a').forEach(o => o.addEventListener('click', close));
+  addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+  window.__navLabel = t => { btn.textContent = t; };
+})();
 </script>
 </body>
 </html>
