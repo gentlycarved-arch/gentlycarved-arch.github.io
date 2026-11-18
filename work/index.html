@@ -135,6 +135,11 @@
 
   .notepanel { display: flex !important; align-items: center; justify-content: center; }
   .notepanel p { margin: 0 !important; }
+
+  /* No background behind any text: notes sit as plain words in their tile, nav words have no hover pill. */
+  .notepanel { background: transparent !important; }
+  nav button:hover { background: none !important; color: var(--ink); }
+  nav button.between:hover { color: var(--ink); }
 </style>
 </head>
 <body>
