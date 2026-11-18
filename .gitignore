@@ -126,3 +126,7 @@ media/posters/*
 !work/negative-space/index.html
 !media/negative-space/
 !media/negative-space/*
+
+# Lossless WebP copies of the PNGs (pixel-identical, lighter)
+!media/webp/
+!media/webp/*
