@@ -145,30 +145,7 @@
   .entry .pic.cutout { background: #fff; }
   .entry .pic.cutout img { object-fit: contain; padding: 6%; box-sizing: border-box; }
 
-  /* Wisp (by Noman Ijaz, github.com/nomanjack/wisp, MIT): on hover a picture's edges soften into the page
-     and a blurred halo of its own colours spreads out around it. Adapted here for hovers. */
-  @property --wf { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
-  .entry { position: relative; isolation: isolate; }
-  .entry .pic { --wf: 0%; transition: --wf .7s ease, border-radius .7s ease;
-    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 var(--wf), #000 calc(100% - var(--wf)), transparent 100%), linear-gradient(to bottom, transparent 0, #000 var(--wf), #000 calc(100% - var(--wf)), transparent 100%);
-    -webkit-mask-composite: source-in; mask-composite: intersect;
-            mask-image: linear-gradient(to right, transparent 0, #000 var(--wf), #000 calc(100% - var(--wf)), transparent 100%), linear-gradient(to bottom, transparent 0, #000 var(--wf), #000 calc(100% - var(--wf)), transparent 100%); }
-  .entry .pic.wisping, .entry .pic[data-shoutout-hover] { --wf: 12%; }
-  .entry .pic:not(.notepanel):hover { --wf: 12%; }
-  .notepanel { -webkit-mask-image: none !important; mask-image: none !important; }
-  .halo { position: absolute; z-index: -1; pointer-events: none; opacity: 0; transition: opacity .9s ease;
-    filter: blur(34px) saturate(1.7); border-radius: 40%; }
-  .halo.on { opacity: .85; }
-  .me { position: relative; isolation: isolate; }
-  .me::after { content: ""; position: absolute; inset: -45%; z-index: -1; border-radius: 50%;
-    background: inherit; filter: blur(16px) saturate(1.6); opacity: 0; transition: opacity .9s ease; }
-  .me:hover::after { opacity: .8; }
 
-  /* The footer, with the Shoutout button for the makers whose work is used here. */
-  .foot { display: flex; justify-content: center; padding: 0 0 60px; }
-  .foot button { font: 400 11.5px/19px "IBM Plex Mono", ui-monospace, Menlo, monospace; text-transform: uppercase; letter-spacing: .04em;
-    background: none; border: 0; padding: 0; color: var(--muted); cursor: pointer; }
-  .foot button:hover { color: var(--ink); }
 
   /* Under Tools: "Created by: Me, Another Designer". */
   .how button { font: inherit; color: var(--muted); background: none; border: 0; padding: 0; cursor: pointer;
@@ -222,13 +199,21 @@
 
   /* Hover: simple and tactile. The colour comes in and the picture grows a touch. (Wisp removed.) */
   .entry .pic { --wf: 0% !important; -webkit-mask-image: none !important; mask-image: none !important; overflow: hidden; }
-  .halo { display: none !important; }
-  .me::after { display: none !important; }
   .entry .pic img, .entry .pic video { transition: filter 1.2s ease, transform .5s cubic-bezier(.2,.8,.2,1); transform-origin: center; }
   .entry .pic:hover img, .entry .pic:hover video { filter: grayscale(0); transform: scale(1.04); }
   .me { transition: filter 1.2s ease, transform .5s cubic-bezier(.2,.8,.2,1); }
   .me:hover { transform: scale(1.06); }
   @media (prefers-reduced-motion: reduce) { .entry .pic:hover img, .entry .pic:hover video, .me:hover { transform: none; } }
+
+  /* Phones: the nav stays one line you can swipe sideways, so the pinned header stays small. */
+  @media (max-width: 760px) {
+    header { gap: 10px; padding: 12px 12px 10px; }
+    .me { width: 48px; height: 48px; }
+    nav { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; max-width: calc(100vw - 24px); border-radius: 999px !important;
+      scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+    nav::-webkit-scrollbar { display: none; }
+    nav button, nav .gap { flex: none; }
+  }
 </style>
 </head>
 <body>
@@ -322,30 +307,6 @@ function picture(src, kind, poster, caption, href) {
   }
   wrap.appendChild(el);
   return wrap;
-}
-
-// Wisp's halo: the picture's own colours, blurred, spreading out around it on hover.
-function wisp(pic, media) {
-  pic.dataset.credit = 'wisp';
-  let halo = null, raf = 0;
-  const draw = () => {
-    const g = halo.getContext('2d');
-    try { g.drawImage(media, 0, 0, halo.width, halo.height); } catch (e) {}
-    if (media.tagName === 'VIDEO' && halo.classList.contains('on')) raf = requestAnimationFrame(draw);
-  };
-  pic.addEventListener('mouseenter', () => {
-    const entry = pic.closest('.entry'); if (!entry) return;
-    if (!halo) { halo = document.createElement('canvas'); halo.className = 'halo'; halo.width = 48; halo.height = 32; halo.setAttribute('aria-hidden', 'true'); }
-    const e = entry.getBoundingClientRect(), b = pic.getBoundingClientRect();
-    Object.assign(halo.style, { left: (b.left - e.left - b.width * .14) + 'px', top: (b.top - e.top - b.height * .2) + 'px', width: b.width * 1.28 + 'px', height: b.height * 1.4 + 'px' });
-    entry.prepend(halo);
-    pic.classList.add('wisping');
-    requestAnimationFrame(() => { halo.classList.add('on'); draw(); });
-  });
-  pic.addEventListener('mouseleave', () => {
-    pic.classList.remove('wisping'); cancelAnimationFrame(raf);
-    if (halo) halo.classList.remove('on');
-  });
 }
 
 const made = new Map();   // each entry is made once and moved between views
@@ -510,6 +471,9 @@ function setTab(t) {
   if (t !== tab) toolsBy = null;   // coming back to Tools shows both makers again
   tab = TABS.includes(t) ? t : 'all';
   document.querySelectorAll('nav button').forEach(b => b.setAttribute('aria-pressed', b.dataset.tab === tab));
+  // On a phone the nav is a strip you swipe: slide it so the option you're on is in view.
+  const navEl = $('nav'), on = navEl.querySelector('[aria-pressed="true"]');
+  if (on && navEl.scrollWidth > navEl.clientWidth) navEl.scrollTo({ left: on.offsetLeft - (navEl.clientWidth - on.offsetWidth) / 2, behavior: 'smooth' });
   $('title').textContent = tab === 'all' ? 'Work' : tab[0].toUpperCase() + tab.slice(1);
   showHow();
   const want = location.pathname + location.search + (tab === 'all' ? '' : '#' + tab);

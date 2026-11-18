@@ -114,6 +114,16 @@
   figure.tall { width: min(620px, calc(100vw - 48px)); }
   figure { margin-top: 56px; margin-bottom: 64px; }
   @media (max-width: 760px) { figure.wide, figure.square, figure.tall { width: calc(100vw - 32px); } }
+
+  /* Phones: the nav stays one line you can swipe sideways, so the pinned header stays small. */
+  @media (max-width: 760px) {
+    header { gap: 10px; padding: 12px 12px 10px; }
+    .me { width: 48px; height: 48px; }
+    nav { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; max-width: calc(100vw - 24px); border-radius: 999px !important;
+      scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+    nav::-webkit-scrollbar { display: none; }
+    nav .opt, nav .gap { flex: none; }
+  }
   html, body { background: #fff !important; }
 </style>
 </head>
