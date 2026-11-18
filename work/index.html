@@ -6,6 +6,7 @@
 <title>Work · Tahreem Rehman</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="../media/me-metal.png">
+<link rel="credits" href="/credits.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=STIX+Two+Text:wght@400;600&display=swap" rel="stylesheet">
@@ -144,6 +145,37 @@
   /* Pieces with no background of their own (the tees) sit whole on white. */
   .entry .pic.cutout { background: #fff; }
   .entry .pic.cutout img { object-fit: contain; padding: 6%; box-sizing: border-box; }
+
+  /* Wisp (by Noman Ijaz, github.com/nomanjack/wisp, MIT): on hover a picture's edges soften into the page
+     and a blurred halo of its own colours spreads out around it. Adapted here for hovers. */
+  @property --wf { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+  .entry { position: relative; isolation: isolate; }
+  .entry .pic { --wf: 0%; transition: --wf .7s ease, border-radius .7s ease;
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 var(--wf), #000 calc(100% - var(--wf)), transparent 100%), linear-gradient(to bottom, transparent 0, #000 var(--wf), #000 calc(100% - var(--wf)), transparent 100%);
+    -webkit-mask-composite: source-in; mask-composite: intersect;
+            mask-image: linear-gradient(to right, transparent 0, #000 var(--wf), #000 calc(100% - var(--wf)), transparent 100%), linear-gradient(to bottom, transparent 0, #000 var(--wf), #000 calc(100% - var(--wf)), transparent 100%); }
+  .entry .pic.wisping, .entry .pic[data-shoutout-hover] { --wf: 12%; }
+  .entry .pic:not(.notepanel):hover { --wf: 12%; }
+  .notepanel { -webkit-mask-image: none !important; mask-image: none !important; }
+  .halo { position: absolute; z-index: -1; pointer-events: none; opacity: 0; transition: opacity .9s ease;
+    filter: blur(34px) saturate(1.7); border-radius: 40%; }
+  .halo.on { opacity: .85; }
+  .me { position: relative; isolation: isolate; }
+  .me::after { content: ""; position: absolute; inset: -45%; z-index: -1; border-radius: 50%;
+    background: inherit; filter: blur(16px) saturate(1.6); opacity: 0; transition: opacity .9s ease; }
+  .me:hover::after { opacity: .8; }
+
+  /* The footer, with the Shoutout button for the makers whose work is used here. */
+  .foot { display: flex; justify-content: center; padding: 0 0 60px; }
+  .foot button { font: 400 11.5px/19px "IBM Plex Mono", ui-monospace, Menlo, monospace; text-transform: uppercase; letter-spacing: .04em;
+    background: none; border: 0; padding: 0; color: var(--muted); cursor: pointer; }
+  .foot button:hover { color: var(--ink); }
+
+  /* Under Tools: "Created by: Me, Another Designer". */
+  .how button { font: inherit; color: var(--muted); background: none; border: 0; padding: 0; cursor: pointer;
+    text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 4px; transition: color .2s, text-decoration-color .2s; }
+  .how button:hover { color: var(--ink); }
+  .how button[aria-pressed="true"] { color: var(--ink); text-decoration-color: currentColor; }
 </style>
 </head>
 <body>
@@ -164,6 +196,7 @@
   <h1 id="title">Work</h1>
   <p class="how" id="how"></p>
   <main><div class="cols" id="cols"></div></main>
+  <footer class="foot"><button type="button" data-shoutout-button>Shoutout</button></footer>
 </div>
 
 <div class="full" id="full"><figure><img alt=""><figcaption></figcaption></figure></div>
@@ -189,6 +222,7 @@ const BETWEEN = {
 // Systems joins brand and tools, which can't also sit side by side in one line, so it comes last.
 const TABS = ['all', 'software', 'websites', 'brand', 'merch', 'fun', 'toys', 'tools', 'products', 'systems', 'notes'];
 let tab = 'all';
+let toolsBy = null;   // under Tools: null (both), 'me' or 'others'
 
 const $ = id => document.getElementById(id);
 const full = $('full');
@@ -211,7 +245,32 @@ function picture(src, kind, poster, caption, href) {
     });
   }
   wrap.appendChild(el);
+  wisp(wrap, el);
   return wrap;
+}
+
+// Wisp's halo: the picture's own colours, blurred, spreading out around it on hover.
+function wisp(pic, media) {
+  pic.dataset.credit = 'wisp';
+  let halo = null, raf = 0;
+  const draw = () => {
+    const g = halo.getContext('2d');
+    try { g.drawImage(media, 0, 0, halo.width, halo.height); } catch (e) {}
+    if (media.tagName === 'VIDEO' && halo.classList.contains('on')) raf = requestAnimationFrame(draw);
+  };
+  pic.addEventListener('mouseenter', () => {
+    const entry = pic.closest('.entry'); if (!entry) return;
+    if (!halo) { halo = document.createElement('canvas'); halo.className = 'halo'; halo.width = 48; halo.height = 32; halo.setAttribute('aria-hidden', 'true'); }
+    const e = entry.getBoundingClientRect(), b = pic.getBoundingClientRect();
+    Object.assign(halo.style, { left: (b.left - e.left - b.width * .14) + 'px', top: (b.top - e.top - b.height * .2) + 'px', width: b.width * 1.28 + 'px', height: b.height * 1.4 + 'px' });
+    entry.prepend(halo);
+    pic.classList.add('wisping');
+    requestAnimationFrame(() => { halo.classList.add('on'); draw(); });
+  });
+  pic.addEventListener('mouseleave', () => {
+    pic.classList.remove('wisping'); cancelAnimationFrame(raf);
+    if (halo) halo.classList.remove('on');
+  });
 }
 
 const made = new Map();   // each entry is made once and moved between views
@@ -255,7 +314,7 @@ function entryFor(it) {
 function listFor(t) {
   if (t === 'notes') return TWEETS;
   const work = t === 'all' ? ITEMS : ITEMS.filter(it => it.tags.includes(t));
-  if (t === 'tools') return [...work, ...OTHERS];
+  if (t === 'tools') return toolsBy === 'me' ? work : toolsBy === 'others' ? OTHERS : [...work, ...OTHERS];
   if (t !== 'all') return work;
   const out = [], notes = TWEETS.slice();
   // A note after every fourth piece, so notes fall in different columns as the grid goes down.
@@ -274,7 +333,7 @@ let laid = '';
 function layout() {
   // An even grid: three across, every entry the same width, in reading order.
   const n = innerWidth > 1100 ? 3 : innerWidth > 640 ? 2 : 1;
-  const key = tab + n;
+  const key = tab + n + (tab === 'tools' ? toolsBy : '');
   if (key === laid) return;
   laid = key;
   const cols = $('cols');
@@ -291,11 +350,23 @@ function drawNav() {
     if (BETWEEN[t]) { b.classList.add('between'); b.title = `${BETWEEN[t][0]} + ${BETWEEN[t][1]}: ${BETWEEN[t][2]}`; }
     b.addEventListener('click', () => setTab(t));
     b.addEventListener('mouseenter', () => { if (BETWEEN[t]) $('how').textContent = `${BETWEEN[t][0]} + ${BETWEEN[t][1]}: ${BETWEEN[t][2]}`; });
-    b.addEventListener('mouseleave', () => showHow());
+    b.addEventListener('mouseleave', () => { if (BETWEEN[t]) showHow(); });
     nav.appendChild(b);
   });
 }
-function showHow() { $('how').textContent = BETWEEN[tab] ? `${BETWEEN[tab][0]} + ${BETWEEN[tab][1]}: ${BETWEEN[tab][2]}` : ''; }
+function showHow() {
+  const how = $('how');
+  if (tab === 'tools') {
+    // Under Tools: who made them. Each name shows just theirs; clicking it again shows both.
+    how.innerHTML = 'Created by: <button type="button" data-by="me">Me</button>, <button type="button" data-by="others">Another Designer</button>';
+    how.querySelectorAll('button').forEach(b => {
+      b.setAttribute('aria-pressed', toolsBy === b.dataset.by);
+      b.addEventListener('click', () => { toolsBy = toolsBy === b.dataset.by ? null : b.dataset.by; laid = ''; showHow(); layout(); });
+    });
+    return;
+  }
+  how.textContent = BETWEEN[tab] ? `${BETWEEN[tab][0]} + ${BETWEEN[tab][1]}: ${BETWEEN[tab][2]}` : '';
+}
 
 function setTab(t) {
   tab = TABS.includes(t) ? t : 'all';
@@ -325,5 +396,6 @@ $('form')?.addEventListener('submit', e => {
 full.addEventListener('click', () => full.classList.remove('open'));
 addEventListener('keydown', e => { if (e.key === 'Escape') full.classList.remove('open'); });
 </script>
+<script src="/shoutout.js" defer></script>
 </body>
 </html>

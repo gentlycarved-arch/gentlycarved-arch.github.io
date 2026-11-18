@@ -121,3 +121,9 @@ media/posters/*
 !media/toronto-society/*
 !media/site-landing-montage.mp4
 !media/posters/site-landing-montage.jpg
+
+# Shoutout credits, and Wisp's MIT licence (its look is adapted for the work page hovers)
+!shoutout.js
+!credits.json
+!licenses/
+!licenses/*

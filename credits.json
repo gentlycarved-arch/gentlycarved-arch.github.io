@@ -1,0 +1,19 @@
+{
+  "credit": "1.0",
+  "site": "gentlycarved",
+  "credits": [
+    {
+      "id": "wisp",
+      "name": "Wisp",
+      "author": "Noman Ijaz",
+      "authorUrl": "https://iamnoman.com/",
+      "authorLinks": ["https://github.com/nomanjack", "https://x.com/Nomandsign"],
+      "about": "Product design, interactive prototypes and experiments by Noman Ijaz. Work with Bland, Rover, SF Compute, Framer and Planhat.",
+      "url": "https://github.com/nomanjack/wisp",
+      "license": "MIT",
+      "kind": "motion",
+      "replay": "hover-events",
+      "note": "On hover, each picture's edges fade softly into the page and a blurred halo of its own colours spreads around it."
+    }
+  ]
+}
