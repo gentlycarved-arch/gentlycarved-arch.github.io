@@ -505,9 +505,14 @@ function setTab(t) {
   document.querySelectorAll('nav button').forEach(b => b.setAttribute('aria-pressed', b.dataset.tab === tab));
   $('title').textContent = tab === 'all' ? 'Work' : tab[0].toUpperCase() + tab.slice(1);
   showHow();
-  history.replaceState(null, '', location.pathname + location.search + (tab === 'all' ? '' : '#' + tab));
+  const want = location.pathname + location.search + (tab === 'all' ? '' : '#' + tab);
+  if (location.pathname + location.search + location.hash !== want) history.pushState(null, '', want);   // so Back goes to the last option
   layout();
+  scrollTo({ top: 0, behavior: 'instant' });   // always start the new view from the top, title in sight
 }
+
+// Back and Forward move between options.
+addEventListener('popstate', () => setTab(decodeURIComponent(location.hash.slice(1)) || 'all'));
 
 function show() {
   $('gate').remove(); $('page').hidden = false;
@@ -517,7 +522,7 @@ function show() {
 }
 
 let ok = false;
-ok = true;   // no password for now (the screen is kept, switched off)
+try { ok = sessionStorage.getItem('work') === '1'; } catch (e) {}
 if (ok) show();
 $('form')?.addEventListener('submit', e => {
   e.preventDefault();
