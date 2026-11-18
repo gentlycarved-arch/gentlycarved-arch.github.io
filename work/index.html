@@ -211,6 +211,12 @@
   .arena-head .count { color: var(--muted); }
   .arena-head:hover .name { text-decoration: underline; text-underline-offset: 3px; }
   .how a { text-decoration: underline; text-underline-offset: 4px; }
+
+  .arena-stack { display: flex; flex-direction: column; gap: 110px; min-width: 0; }
+
+  .arena-col .title { overflow-wrap: anywhere; }
+  .arena-col .entry .pic { margin-bottom: 12px; }
+  .arena-col { gap: 40px; }
 </style>
 </head>
 <body>
@@ -390,7 +396,7 @@ function estimate(it) {
 
 // Research: three of my are.na channels, one per column, read live from are.na.
 // Each entry is a channel's slug (the end of its are.na address).
-const RESEARCH = ['color-palette-qtw3s8lypli', 'interface-design-ypohlhax4ns', 'beautiful-evidence-jtqzlzaggm4'];
+const RESEARCH = ['gentlycarved', 'iris-r1uyz4httbm', 'geology-x5h10x41jaq', 'type-shit-qbsb0a8fxwk', 'dreamy-men-2phv8nm'];
 const ARENA = 'https://api.are.na/v3';
 const arenaCache = new Map();
 async function channel(slug) {
@@ -409,27 +415,44 @@ function blockEntry(b) {
     const panel = document.createElement('a'); panel.className = 'pic notepanel'; panel.href = href; panel.target = '_blank'; panel.rel = 'noopener';
     const p = document.createElement('p'); p.textContent = (b.content && (b.content.plain || b.content.markdown)) || ''; panel.appendChild(p); e.appendChild(panel);
   }
-  const t = document.createElement('a'); t.className = 'title'; t.href = href; t.target = '_blank'; t.rel = 'noopener';
-  t.textContent = b.title || (b.source && b.source.title) || b.type;
-  e.appendChild(t);
+  // A title that's only a file name (an upload, a screenshot) isn't shown; real titles are.
+  const title = (b.title || (b.source && b.source.title) || '').trim();
+  const fileish = /\.(jpe?g|png|gif|webp|heic|pdf)\b|^(image|img|screenshot|untitled)\b|\d{6,}|^[\w-]{22,}$/i.test(title) || /^image$/i.test(title);
+  if (title && !fileish) {
+    const t = document.createElement('a'); t.className = 'title'; t.href = href; t.target = '_blank'; t.rel = 'noopener';
+    t.textContent = title; e.appendChild(t);
+  }
   return e;
 }
 function researchView() {
+  // Three columns the width of the rest of the page; with more channels than columns, a channel
+  // goes under whichever column is shortest so far (IRIS is short, so the fourth sits under it).
   const cols = $('cols');
-  cols.style.gridTemplateColumns = `repeat(${innerWidth > 1100 ? 3 : innerWidth > 640 ? 2 : 1}, minmax(0, 1fr))`;
-  cols.replaceChildren(...RESEARCH.map(slug => {
-    const col = document.createElement('section'); col.className = 'arena-col';
-    const head = document.createElement('a'); head.className = 'arena-head'; head.href = `https://www.are.na/gentlycarved/${slug}`; head.target = '_blank'; head.rel = 'noopener';
-    head.textContent = '…'; col.appendChild(head);
-    channel(slug).then(({ info, blocks }) => {
-      head.innerHTML = '';
-      const name = document.createElement('span'); name.className = 'name'; name.textContent = (info.title || slug).trim();
-      const meta = document.createElement('span'); meta.className = 'count'; meta.textContent = `${(info.counts && info.counts.blocks) || blocks.length} blocks · on are.na`;
-      head.append(name, meta);
-      blocks.forEach(b => col.appendChild(blockEntry(b)));
-    }).catch(() => { head.textContent = 'are.na didn’t answer just now'; });
-    return col;
-  }));
+  // Research runs five across, one channel per column.
+  const per = innerWidth > 1100 ? 5 : innerWidth > 640 ? 2 : 1, n = Math.min(RESEARCH.length, per);
+  cols.style.gridTemplateColumns = `repeat(${n}, calc((100% - ${(per - 1) * 10}px) / ${per}))`;
+  cols.style.justifyContent = 'center';
+  const columns = Array.from({ length: n }, () => { const c = document.createElement('div'); c.className = 'arena-stack'; return c; });
+  cols.replaceChildren(...columns);
+  const heights = new Array(n).fill(0);
+  Promise.all(RESEARCH.map(slug => channel(slug).catch(() => null))).then(all => {
+    all.forEach((ch, i) => {
+      const slug = RESEARCH[i];
+      const col = document.createElement('section'); col.className = 'arena-col';
+      const head = document.createElement('a'); head.className = 'arena-head'; head.href = `https://www.are.na/gentlycarved/${slug}`; head.target = '_blank'; head.rel = 'noopener';
+      col.appendChild(head);
+      if (!ch) { head.textContent = 'are.na didn’t answer just now'; }
+      else {
+        const name = document.createElement('span'); name.className = 'name'; name.textContent = (ch.info.title || slug).trim();
+        const meta = document.createElement('span'); meta.className = 'count'; meta.textContent = `${(ch.info.counts && ch.info.counts.blocks) || ch.blocks.length} blocks · on are.na`;
+        head.append(name, meta);
+        ch.blocks.forEach(b => col.appendChild(blockEntry(b)));
+      }
+      const k = heights.indexOf(Math.min(...heights));
+      columns[k].appendChild(col);
+      heights[k] += 1 + (ch ? ch.blocks.length : 0);
+    });
+  });
 }
 
 let laid = '';
@@ -474,6 +497,7 @@ function showHow() {
 }
 
 function setTab(t) {
+  if (t !== tab) toolsBy = null;   // coming back to Tools shows both makers again
   tab = TABS.includes(t) ? t : 'all';
   document.querySelectorAll('nav button').forEach(b => b.setAttribute('aria-pressed', b.dataset.tab === tab));
   $('title').textContent = tab === 'all' ? 'Work' : tab[0].toUpperCase() + tab.slice(1);
