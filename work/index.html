@@ -292,6 +292,19 @@
     header nav button:hover, header nav .opt:hover { font-size: 25px !important; line-height: 22px !important; }
     .navbtn { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important; font-size: 14px !important; letter-spacing: .02em !important; }
   }
+
+  /* About me, smoother. */
+  html { scrollbar-gutter: stable; }
+  html.about-on { overflow: hidden; }
+  .about { transition: opacity .55s ease; }
+  .about.closing { transition: opacity .5s ease .1s; }
+  .about-photo { transition: transform .75s cubic-bezier(.22,1,.36,1), filter 1s ease .35s, box-shadow .6s ease; filter: grayscale(1);
+    box-shadow: 0 0 0 1px rgba(0,0,0,.08); will-change: transform; }
+  .about.open .about-photo { filter: grayscale(0); box-shadow: 0 0 0 1px rgba(0,0,0,.08), 0 18px 50px rgba(0,0,0,.12); }
+  .about.closing .about-photo { transition: transform .6s cubic-bezier(.5,0,.2,1), filter .4s ease, box-shadow .3s ease; }
+  .about-card { transition: opacity .5s ease .22s, transform .7s cubic-bezier(.22,1,.36,1) .22s; transform: translateY(18px); }
+  .about.closing .about-card { transition: opacity .2s ease, transform .3s ease; transform: translateY(10px); }
+  @media (prefers-reduced-motion: reduce) { .about, .about-photo, .about-card { transition: opacity .2s ease !important; } }
 </style>
 </head>
 <body>
@@ -630,19 +643,36 @@ function grow(fromSmall) {
   const s = a.width / b.width, dx = (a.left + a.width / 2) - (b.left + b.width / 2), dy = (a.top + a.height / 2) - (b.top + b.height / 2);
   return `translate(${dx}px, ${dy}px) scale(${s})`;
 }
+// Open: the photo grows from exactly where the small one sits, in black and white, then its colour
+// fades in as it lands and the card rises in under it. Close: the card goes first, then the photo
+// shrinks back into place, and only when it has arrived does the small one reappear.
+let aboutBusy = 0;
 function openAbout() {
+  if (!about.hidden) return;
+  clearTimeout(aboutBusy);
   about.hidden = false;
+  about.classList.remove('closing');
   aboutPhoto.style.transition = 'none';
   aboutPhoto.style.transform = grow();
-  void aboutPhoto.offsetWidth;
+  void aboutPhoto.offsetWidth;                          // lay it out at the small photo's place first
   aboutPhoto.style.transition = '';
+  me.style.visibility = 'hidden';                       // same frame: the big one now sits exactly on top of it
+  document.documentElement.classList.add('about-on');   // stops the page scrolling without shifting it
+  void about.offsetWidth;                               // commit the start, then animate to the end
   about.classList.add('open'); aboutPhoto.style.transform = 'none';
-  me.style.visibility = 'hidden'; document.body.style.overflow = 'hidden';
 }
 function closeAbout() {
-  if (about.hidden) return;
-  about.classList.remove('open'); aboutPhoto.style.transform = grow();
-  setTimeout(() => { about.hidden = true; me.style.visibility = ''; document.body.style.overflow = ''; }, 500);
+  if (about.hidden || about.classList.contains('closing')) return;
+  about.classList.add('closing');
+  about.classList.remove('open');
+  aboutPhoto.style.transform = grow();
+  const done = () => {
+    about.hidden = true; about.classList.remove('closing');
+    me.style.visibility = ''; document.documentElement.classList.remove('about-on');
+  };
+  let ended = false;
+  aboutPhoto.addEventListener('transitionend', function f(e) { if (e.propertyName !== 'transform') return; aboutPhoto.removeEventListener('transitionend', f); ended = true; done(); });
+  aboutBusy = setTimeout(() => { if (!ended) done(); }, 900);   // in case the transition is skipped
 }
 me.addEventListener('click', openAbout);
 about.addEventListener('click', e => { if (!e.target.closest('.about-card')) closeAbout(); });
