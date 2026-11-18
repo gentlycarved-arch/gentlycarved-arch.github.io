@@ -275,6 +275,23 @@
     header nav button[aria-pressed="true"] { font-size: 25px !important; line-height: 22px !important; }
     .navbtn { font-family: "Pinyon Script", "Snell Roundhand", cursive; font-size: 21px; letter-spacing: 0; }
   }
+
+  /* Script only on hover. The option you're on keeps the plain type with a thin underline. */
+  nav button[aria-pressed="true"], .about-tabs button[aria-selected="true"], .how button[aria-pressed="true"] {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important; font-size: 14px !important; line-height: 20px !important;
+    letter-spacing: .02em !important; text-decoration: underline !important; text-underline-offset: 5px; text-decoration-thickness: 1px;
+  }
+  .about-tabs button[aria-selected="true"] { font-size: 13px !important; line-height: 18px !important; }
+  .how button[aria-pressed="true"] { font: inherit !important; text-decoration: underline !important; }
+  nav button:hover, nav .opt:hover, .about-tabs button:hover, .how button:hover {
+    font-family: "Pinyon Script", "Snell Roundhand", cursive !important; font-size: 21px !important; line-height: 20px !important; letter-spacing: 0 !important;
+  }
+  .about-tabs button:hover { font-size: 19px !important; line-height: 18px !important; }
+  @media (max-width: 760px) {
+    header nav button[aria-pressed="true"] { font-size: 17px !important; line-height: 22px !important; }
+    header nav button:hover, header nav .opt:hover { font-size: 25px !important; line-height: 22px !important; }
+    .navbtn { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important; font-size: 14px !important; letter-spacing: .02em !important; }
+  }
 </style>
 </head>
 <body>
